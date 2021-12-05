@@ -1,5 +1,5 @@
 from pythonsupermarket.model_objects import Offer
-from receipt import Receipt
+from pythonsupermarket.receipt import Receipt
 
 
 class Teller:
