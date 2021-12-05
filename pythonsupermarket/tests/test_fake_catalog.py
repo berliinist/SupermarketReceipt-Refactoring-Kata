@@ -29,28 +29,30 @@ class TestFakeCatalog(unittest.TestCase):
         self.assertEqual(len(self.fakecatalog.prices), 0)
 
     def test_calling_initial_unit_price_method_raises_error(self):
-        item_not_added = set_up_product_catalog_dict()
+        product_catalog_not_added = set_up_product_catalog_dict()
         with self.assertRaises(AttributeError):
-            self.fakecatalog.unit_price(item_not_added)
+            self.fakecatalog.unit_price(product_catalog_not_added)
 
-    def test_add_product_is_functioning_correctly_by_asserting_first_added_item(self):
-        item = set_up_product_catalog_dict()
-        self.fakecatalog.add_product(**item)
+    def test_add_product_is_functioning_correctly_by_asserting_first_added_product_catalog(self):
+        catalog = set_up_product_catalog_dict()
+        self.fakecatalog.add_product(**catalog)
 
-        self.assertDictEqual(self.fakecatalog.products, {item['product'].name: item['product']})
-        self.assertDictEqual(self.fakecatalog.prices, {item['product'].name: item['price']})
+        self.assertDictEqual(self.fakecatalog.products, {catalog['product'].name: catalog['product']})
+        self.assertDictEqual(self.fakecatalog.prices, {catalog['product'].name: catalog['price']})
 
-    def test_add_product_is_functioning_correctly_by_asserting_first_added_multiple_items(self):
-        items = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
-        for item in items:
-            self.fakecatalog.add_product(**item)
+    def test_add_product_is_functioning_correctly_by_asserting_first_added_multiple_product_catalogs(self):
+        catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
+        for product_catalog in catalogs:
+            self.fakecatalog.add_product(**product_catalog)
 
-        self.assertDictEqual(self.fakecatalog.products, {item['product'].name: item['product'] for item in items})
-        self.assertDictEqual(self.fakecatalog.prices, {item['product'].name: item['price'] for item in items})
+        self.assertDictEqual(self.fakecatalog.products,
+                             {catalog['product'].name: catalog['product'] for catalog in catalogs})
+        self.assertDictEqual(self.fakecatalog.prices,
+                             {catalog['product'].name: catalog['price'] for catalog in catalogs})
 
-    def test_unit_price_method_call_returns_value_of_an_item_correctly(self):
-        items = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
-        for item in items:
-            self.fakecatalog.add_product(**item)
-        for item in items:
-            self.assertEqual(self.fakecatalog.unit_price(item['product']), item['price'])
+    def test_unit_price_method_call_returns_value_of_a_product_catalog_correctly(self):
+        catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
+        for catalog in catalogs:
+            self.fakecatalog.add_product(**catalog)
+        for catalog in catalogs:
+            self.assertEqual(self.fakecatalog.unit_price(catalog['product']), catalog['price'])
