@@ -13,3 +13,9 @@ def set_up_product_dict():
 def set_up_item():
     return {
         'product': PRODUCT_NAMEDTUPLE(**set_up_product_dict()), 'price': random.random() * 100}
+
+
+class SharedUnitTests:
+    def test_asserts_product_correctly(self):
+        self.assertEqual(self.test_class.product.name, self.product_dict['name'])
+        self.assertEqual(self.test_class.product.unit, self.product_dict['unit'])
