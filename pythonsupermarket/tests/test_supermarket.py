@@ -1,7 +1,5 @@
 import unittest
 
-import pytest
-
 from pythonsupermarket.model_objects import Product, SpecialOfferType, ProductUnit
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.teller import Teller
