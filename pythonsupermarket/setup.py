@@ -2,6 +2,7 @@
 
 from distutils.core import setup
 
+exec(open('pythonsupermarket/__init__.py').read())
 
 with open('requirements.txt') as f:
     requirements = f.readlines()
@@ -9,7 +10,7 @@ requirements = [element.strip() for element in requirements]
 
 
 setup(name='pythonsupermarket',
-      version='0.0.1',  # TODO: get it from version.py directly (create it first).
+      version=__version__,
       description='Code Challenge.',
       author='emilybache',
       maintainer='berliinist',
