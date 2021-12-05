@@ -25,15 +25,24 @@ class TestTenPercentDiscount(unittest.TestCase):
 
         self.receipt = teller.checks_out_articles_from(cart)
 
-    def test_assert_total_price(self):
-        self.assertAlmostEqual(4.975, self.receipt.total_price(), places=2)
+    def test_assert_expected_total_price_in_receipt(self):
+        self.assertAlmostEqual(4.975, self.receipt.total_price(), delta=0.01)
 
-    def test_everything(self):
-        receipt = self.receipt
-        assert [] == receipt.discounts
-        assert 1 == len(receipt.items)
-        receipt_item = receipt.items[0]
-        assert self.apples == receipt_item.product
-        assert 1.99 == receipt_item.price
-        assert 2.5 * 1.99 == pytest.approx(receipt_item.total_price, 0.01)
-        assert 2.5 == receipt_item.quantity
+    def test_assert_discounts_list_is_empty(self):
+        self.assertListEqual(self.receipt.discounts, [])
+
+    def test_assert_number_of_items_in_receipt_is_one(self):
+        self.assertEqual(len(self.receipt.items), 1)
+
+    def test_assert_item_is_apple(self):
+        self.assertEqual(self.apples, self.receipt.items[0].product)
+
+    def test_assert_normal_price_of_an_item_per_kilo(self):
+        self.assertEqual(self.receipt.items[0].price, 1.99)
+
+    def test_assert_total_price_of_item(self):
+        self.assertAlmostEqual(2.5 * 1.99, self.receipt.items[0].total_price, delta=0.01)
+
+    def test_assert_quantity_of_item(self):
+        self.assertEqual(2.5, self.receipt.items[0].quantity)
+
