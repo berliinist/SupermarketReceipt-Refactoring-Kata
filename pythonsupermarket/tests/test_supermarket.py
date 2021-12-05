@@ -3,7 +3,7 @@ import pytest
 from pythonsupermarket.model_objects import Product, SpecialOfferType, ProductUnit
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.teller import Teller
-from tests.fake_catalog import FakeCatalog
+from pythonsupermarket.fake_catalog import FakeCatalog
 
 
 def test_ten_percent_discount():
