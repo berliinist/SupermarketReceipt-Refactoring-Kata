@@ -1,3 +1,5 @@
+import unittest
+
 import pytest
 
 from pythonsupermarket.model_objects import Product, SpecialOfferType, ProductUnit
@@ -6,27 +8,30 @@ from pythonsupermarket.teller import Teller
 from pythonsupermarket.fake_catalog import FakeCatalog
 
 
-def test_ten_percent_discount():
-    catalog = FakeCatalog()
-    toothbrush = Product("toothbrush", ProductUnit.EACH)
-    catalog.add_product(toothbrush, 0.99)
+class TestTenPercentDiscount(unittest.TestCase):
+    def setUp(self):
+        catalog = FakeCatalog()
+        toothbrush = Product("toothbrush", ProductUnit.EACH)
+        catalog.add_product(toothbrush, 0.99)
 
-    apples = Product("apples", ProductUnit.KILO)
-    catalog.add_product(apples, 1.99)
+        self.apples = Product("apples", ProductUnit.KILO)
+        catalog.add_product(self.apples, 1.99)
 
-    teller = Teller(catalog)
-    teller.add_special_offer(SpecialOfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0)
+        teller = Teller(catalog)
+        teller.add_special_offer(SpecialOfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0)
 
-    cart = ShoppingCart()
-    cart.add_item_quantity(apples, 2.5)
+        cart = ShoppingCart()
+        cart.add_item_quantity(self.apples, 2.5)
 
-    receipt = teller.checks_out_articles_from(cart)
+        self.receipt = teller.checks_out_articles_from(cart)
 
-    assert 4.975 == pytest.approx(receipt.total_price(), 0.01)
-    assert [] == receipt.discounts
-    assert 1 == len(receipt.items)
-    receipt_item = receipt.items[0]
-    assert apples == receipt_item.product
-    assert 1.99 == receipt_item.price
-    assert 2.5 * 1.99 == pytest.approx(receipt_item.total_price, 0.01)
-    assert 2.5 == receipt_item.quantity
+    def test_everything(self):
+        receipt = self.receipt
+        assert 4.975 == pytest.approx(receipt.total_price(), 0.01)
+        assert [] == receipt.discounts
+        assert 1 == len(receipt.items)
+        receipt_item = receipt.items[0]
+        assert self.apples == receipt_item.product
+        assert 1.99 == receipt_item.price
+        assert 2.5 * 1.99 == pytest.approx(receipt_item.total_price, 0.01)
+        assert 2.5 == receipt_item.quantity
