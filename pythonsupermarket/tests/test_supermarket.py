@@ -25,9 +25,11 @@ class TestTenPercentDiscount(unittest.TestCase):
 
         self.receipt = teller.checks_out_articles_from(cart)
 
+    def test_assert_total_price(self):
+        self.assertAlmostEqual(4.975, self.receipt.total_price(), places=2)
+
     def test_everything(self):
         receipt = self.receipt
-        assert 4.975 == pytest.approx(receipt.total_price(), 0.01)
         assert [] == receipt.discounts
         assert 1 == len(receipt.items)
         receipt_item = receipt.items[0]
