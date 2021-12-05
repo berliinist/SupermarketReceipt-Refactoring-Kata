@@ -1,9 +1,9 @@
 import pytest
 
-from model_objects import Product, SpecialOfferType, ProductUnit
-from shopping_cart import ShoppingCart
-from teller import Teller
-from tests.fake_catalog import FakeCatalog
+from pythonsupermarket.model_objects import Product, SpecialOfferType, ProductUnit
+from pythonsupermarket.shopping_cart import ShoppingCart
+from pythonsupermarket.teller import Teller
+from pythonsupermarket.fake_catalog import FakeCatalog
 
 
 def test_ten_percent_discount():
