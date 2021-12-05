@@ -1,7 +1,10 @@
 import copy as cp
+import enum
 import random
 import unittest
 from unittest.mock import Mock, PropertyMock
+
+from parameterized import parameterized
 
 import pythonsupermarket.model_objects as mdl_objcts
 
@@ -52,3 +55,18 @@ class TestProductQuantityIntegration(unittest.TestCase):
 
     def test_assert_quantity_attribute_of_product_quantity(self):
         self.assertEqual(self.productquantity_class.quantity, self.product_quantity)
+
+
+class TestProductUnit(unittest.TestCase):
+    def setUp(self):
+        self.productunit = mdl_objcts.ProductUnit
+
+    @parameterized.expand([(1, ), (2, )])
+    def test_product_unit_is_instance_of_enum(self, value):
+        self.assertIsInstance(self.productunit(value), enum.Enum)
+
+    def test_assert_product_unit_of_enum_one_equals_to_productunit_each(self):
+        self.assertEqual(self.productunit(1), mdl_objcts.ProductUnit.EACH)
+
+    def test_assert_product_unit_of_enum_two_equals_to_productunit_kilo(self):
+        self.assertEqual(self.productunit(2), mdl_objcts.ProductUnit.KILO)
