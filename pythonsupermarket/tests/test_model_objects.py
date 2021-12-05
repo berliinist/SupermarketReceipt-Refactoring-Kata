@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import Mock, PropertyMock
 
 from parameterized import parameterized
+import pytest
 
 import pythonsupermarket.model_objects as mdl_objcts
 
@@ -90,3 +91,34 @@ class TestSpecialOfferType(unittest.TestCase):
 
     def test_assert_special_offer_type_of_four_equals_five_for_amount(self):
         self.assertEqual(self.class_enum(4), mdl_objcts.SpecialOfferType.FIVE_FOR_AMOUNT)
+
+    @pytest.mark.skip(reason="priority list.")
+    def test_raises_error_if_special_offer_type_is_five(self):
+        pass
+
+@pytest.mark.skip(reason="higher priorities elsewhere for now. please rely on integrated tests for now.")
+class TestOffer(unittest.TestCase):
+    def setUp(self):
+        pass
+
+
+class TestOfferIntegration(unittest.TestCase):
+    def setUp(self):
+        self.offer_type_value = random.randrange(1, 5)
+        self.product_dict = set_up_product_dict()
+        self.argument = 'unsure what is this for'
+
+        self.offer_class = mdl_objcts.Offer(offer_type=mdl_objcts.SpecialOfferType(self.offer_type_value),
+                                            product=mdl_objcts.Product(**cp.deepcopy(self.product_dict)),
+                                            argument=self.argument)
+
+    def test_asserts_offer_type_setup_correctly(self):
+        self.assertEqual(self.offer_class.offer_type.value, self.offer_type_value)
+
+    def test_asserts_product_correctly(self):
+        self.assertEqual(self.offer_class.product.name, self.product_dict['name'])
+        self.assertEqual(self.offer_class.product.unit, self.product_dict['unit'])
+
+    @pytest.mark.skip(reason="unsure at the moment what arguments exactly, will check later.")
+    def test_asserts_argument_correctly(self):
+        pass
