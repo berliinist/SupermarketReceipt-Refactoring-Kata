@@ -1,4 +1,4 @@
-from catalog import SupermarketCatalog
+from pythonsupermarket.catalog import SupermarketCatalog
 
 
 class FakeCatalog(SupermarketCatalog):
