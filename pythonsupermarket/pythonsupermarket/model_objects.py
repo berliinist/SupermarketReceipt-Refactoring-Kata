@@ -3,8 +3,16 @@ from enum import Enum
 
 class Product:
     def __init__(self, name, unit):
-        self.name = name
-        self.unit = unit
+        self._name = name
+        self._unit = unit
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unit(self):
+        return self._unit
 
 
 class ProductQuantity:
