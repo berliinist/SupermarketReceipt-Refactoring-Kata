@@ -59,14 +59,34 @@ class TestProductQuantityIntegration(unittest.TestCase):
 
 class TestProductUnit(unittest.TestCase):
     def setUp(self):
-        self.productunit = mdl_objcts.ProductUnit
+        self.class_enum = mdl_objcts.ProductUnit
 
     @parameterized.expand([(1, ), (2, )])
     def test_product_unit_is_instance_of_enum(self, value):
-        self.assertIsInstance(self.productunit(value), enum.Enum)
+        self.assertIsInstance(self.class_enum(value), enum.Enum)
 
-    def test_assert_product_unit_of_enum_one_equals_to_productunit_each(self):
-        self.assertEqual(self.productunit(1), mdl_objcts.ProductUnit.EACH)
+    def test_assert_product_unit_of_enum_one_equals_productunit_each(self):
+        self.assertEqual(self.class_enum(1), mdl_objcts.ProductUnit.EACH)
 
-    def test_assert_product_unit_of_enum_two_equals_to_productunit_kilo(self):
-        self.assertEqual(self.productunit(2), mdl_objcts.ProductUnit.KILO)
+    def test_assert_product_unit_of_enum_two_equals_productunit_kilo(self):
+        self.assertEqual(self.class_enum(2), mdl_objcts.ProductUnit.KILO)
+
+
+class TestSpecialOfferType(unittest.TestCase):
+    def setUp(self):
+        self.class_enum = mdl_objcts.SpecialOfferType
+
+    def test_special_offer_type_is_instance_of_enum(self):
+        self.assertIsInstance(self.class_enum(1), enum.Enum)
+
+    def test_assert_special_offer_type_of_one_equals_three_for_two(self):
+        self.assertEqual(self.class_enum(1), mdl_objcts.SpecialOfferType.THREE_FOR_TWO)
+
+    def test_assert_special_offer_type_of_two_equals_ten_percent_discount(self):
+        self.assertEqual(self.class_enum(2), mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT)
+
+    def test_assert_special_offer_type_of_three_equals_two_for_amount(self):
+        self.assertEqual(self.class_enum(3), mdl_objcts.SpecialOfferType.TWO_FOR_AMOUNT)
+
+    def test_assert_special_offer_type_of_four_equals_five_for_amount(self):
+        self.assertEqual(self.class_enum(4), mdl_objcts.SpecialOfferType.FIVE_FOR_AMOUNT)
