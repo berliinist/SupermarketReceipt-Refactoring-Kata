@@ -3,8 +3,16 @@ from enum import Enum
 
 class Product:
     def __init__(self, name, unit):
-        self.name = name
-        self.unit = unit
+        self._name = name
+        self._unit = unit
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def unit(self):
+        return self._unit
 
 
 class ProductQuantity:
@@ -23,6 +31,7 @@ class SpecialOfferType(Enum):
     TEN_PERCENT_DISCOUNT = 2
     TWO_FOR_AMOUNT = 3
     FIVE_FOR_AMOUNT = 4
+
 
 class Offer:
     def __init__(self, offer_type, product, argument):
