@@ -1,4 +1,4 @@
-from model_objects import Offer
+from pythonsupermarket.model_objects import Offer
 from receipt import Receipt
 
 
