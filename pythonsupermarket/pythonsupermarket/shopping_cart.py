@@ -24,7 +24,7 @@ class ShoppingCart:
         else:
             self._product_quantities[product] = quantity
 
-    def handle_offers(self, receipt, offers, catalog):  # TODO: this is too long for readability, find ways to refactor/shorten it?
+    def handle_offers(self, receipt, offers, catalog):
         for p in self._product_quantities.keys():
             quantity = self._product_quantities[p]
             if p in offers.keys():
