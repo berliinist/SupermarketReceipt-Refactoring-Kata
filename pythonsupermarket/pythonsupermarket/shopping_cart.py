@@ -27,7 +27,7 @@ class ShoppingCart:
         else:
             self._product_quantities[product] = quantity
 
-    def handle_offers(self, receipt, offers, catalog):
+    def handle_offers(self, receipt, offers, catalog):  # TODO: this is too long for readability, find ways to refactor/shorten it?
         for p in self._product_quantities.keys():
             quantity = self._product_quantities[p]
             if p in offers.keys():
@@ -55,7 +55,7 @@ class ShoppingCart:
                                 (number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price)
                     discount = Discount(p, "3 for 2", -discount_amount)
 
-                if offer.offer_type == SpecialOfferType.TEN_PERCENT_DISCOUNT:
+                if offer.offer_type == SpecialOfferType.TEN_PERCENT_DISCOUNT:  # TODO: rename it to PERCENT_DISCOUNT
                     discount = Discount(p, str(offer.argument) + "% off",
                                         -quantity * unit_price * offer.argument / 100.0)
 
