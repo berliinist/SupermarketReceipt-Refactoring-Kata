@@ -12,7 +12,7 @@ def set_up_product_dict():
 
 def set_up_product_catalog_dict():
     return {
-        'product': PRODUCT_NAMEDTUPLE(**set_up_product_dict()), 'price': round(random.random() * 100, 2)}
+        'product': PRODUCT_NAMEDTUPLE(**set_up_product_dict()), 'price_per_unit': round(random.random() * 100, 2)}
 
 
 class SharedUnitTests:

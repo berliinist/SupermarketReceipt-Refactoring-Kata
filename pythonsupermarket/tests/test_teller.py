@@ -38,7 +38,7 @@ class TestTellerIntegration(unittest.TestCase):
                                  unit=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].unit))
                          for i in range(nr_products)]
         for i in range(nr_products):
-            self.catalog.add_product(self.products[i], cp.deepcopy(self.prod_catalog_dicts_list[i]['price']))
+            self.catalog.add_product(self.products[i], cp.deepcopy(self.prod_catalog_dicts_list[i]['price_per_unit']))
 
     def _create_offers_and_add_them_to_teller(self, nr_offers):
         for i in range(nr_offers):
@@ -68,7 +68,7 @@ class TestTellerIntegration(unittest.TestCase):
         teller = Teller(self.catalog)
 
         receipt_result = teller.checks_out_articles_from(self.cart)
-        expected = sum(quantity[i] * self.prod_catalog_dicts_list[i]['price'] for i in range(nr_unique_products))
+        expected = sum(quantity[i] * self.prod_catalog_dicts_list[i]['price_per_unit'] for i in range(nr_unique_products))
         self.assertAlmostEqual(receipt_result.total_price(), expected, places=2)
 
     def test_returns_empty_receipt_if_no_items_in_cart(self):

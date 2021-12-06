@@ -20,7 +20,7 @@ class Receipt:
             total += discount.discount_amount
         return total
 
-    def add_product(self, product, quantity, price, total_price):
+    def add_product(self, product, quantity, price, total_price):  # TODO: should rather be product, quantity, total_price?
         self._items.append(ReceiptItem(product, quantity, price, total_price))
 
     def add_discount(self, discount):
