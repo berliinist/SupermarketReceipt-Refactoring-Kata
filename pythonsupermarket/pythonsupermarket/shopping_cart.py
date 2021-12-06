@@ -13,7 +13,7 @@ class ShoppingCart:
     def items(self):
         return self._items
 
-    def add_item(self, product):
+    def add_item(self, product):  # TODO: this is not used anywhere, what for? Remove it?
         self.add_item_quantity(product, 1.0)
 
     @property
