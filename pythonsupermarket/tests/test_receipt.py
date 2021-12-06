@@ -46,7 +46,7 @@ class TestReceiptIntegration(unittest.TestCase):
     def setUp(self):
         self.receipt = receipt.Receipt()
 
-    def _set_up_kw_args_of_each_item_in_list(self, nr_items):  # TODO: rename to set_up_kw_args_of_each_product_in_list
+    def _set_up_kw_args_of_each_product_in_list(self, nr_items):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
         self.kw_args_list = [{'product': mdl_objcts.Product(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1),
@@ -70,20 +70,20 @@ class TestReceiptIntegration(unittest.TestCase):
         self.assertEqual(self.receipt.total_price(), 0)
 
     def test_item_added_is_an_instance_of_receipt_item(self):
-        self._set_up_kw_args_of_each_item_in_list(1)
+        self._set_up_kw_args_of_each_product_in_list(1)
         self.receipt.add_product(**self.kw_args_list[0])
         self.assertIsInstance(self.receipt.items[0], receipt.ReceiptItem)
 
     @parameterized.expand([(1,), (10,)])
     def test_number_of_products_added_returns_the_length_of_items_correctly(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertEqual(len(self.receipt.items), nr_items)
 
     @parameterized.expand([(1,), (8,)])
     def test_assert_product_name_of_each_added_receipt_item(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].product.name for i in range(nr_items)],
@@ -91,7 +91,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1,), (7,)])
     def test_assert_product_unit_of_each_added_receipt_item(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].product.unit for i in range(nr_items)],
@@ -99,7 +99,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1,), (6,)])
     def test_assert_quantity_of_each_added_receipt_item(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].quantity for i in range(nr_items)],
@@ -107,7 +107,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1,), (6,)])
     def test_assert_price_of_each_added_receipt_item(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].price for i in range(nr_items)],
@@ -115,7 +115,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1,), (5,)])
     def test_assert_total_price_of_each_added_receipt_item(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].total_price for i in range(nr_items)],
@@ -154,7 +154,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1,), (5,)])
     def test_assert_total_price_after_adding_products(self, nr_items):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
         expected_total_price = round(sum([self.kw_args_list[i]['total_price'] for i in range(nr_items)]), 2)
@@ -170,7 +170,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     @parameterized.expand([(1, 1), (1, 7), (7, 1)])
     def test_assert_total_price_after_adding_products_and_discounts(self, nr_items, nr_discounts):
-        self._set_up_kw_args_of_each_item_in_list(nr_items)
+        self._set_up_kw_args_of_each_product_in_list(nr_items)
         self._set_up_kw_args_of_each_discount_in_list(nr_discounts)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
