@@ -10,5 +10,5 @@ class FakeCatalog(SupermarketCatalog):
         self.products[product.name] = product
         self.prices[product.name] = price
 
-    def unit_price(self, product):
+    def unit_price(self, product):  # TODO: why does this exist?
         return self.prices[product.name]

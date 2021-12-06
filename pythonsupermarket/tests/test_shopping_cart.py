@@ -119,7 +119,11 @@ class TestShoppingCartIntegration(unittest.TestCase):
                                     'catalog': FakeCatalog()})
         for p, unit_price in [(p_not_in_cart, 9.99), (p_in_cart, 3)]:
             self.handle_kw_args['catalog'].add_product(p, unit_price)
+
+
         self.shoppingcart.add_item_quantity(p_in_cart, 5)
+        self.handle_kw_args['receipt'].add_product(p_in_cart, 5, 3,
+                                                   15 * 3)  # REFACTOR: parameterize these constant values to more variable
         self.shoppingcart.handle_offers(**self.handle_kw_args)
 
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
@@ -128,10 +132,17 @@ class TestShoppingCartIntegration(unittest.TestCase):
         products = [mdl_objcts.Product(f'Special{i}', mdl_objcts.ProductUnit.EACH) for i in range(3)]
         self.offers = {product: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT, product, 12) for product in products}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
+        unit_prices = []
         for p in products:
-            self.handle_kw_args['catalog'].add_product(p, random.random() * 10)
+            unit_prices.append(random.random() * 10)
+            self.handle_kw_args['catalog'].add_product(p, unit_prices[-1])
+        quantities = []
         for i in range(len(products)):
-            self.shoppingcart.add_item_quantity(products[i], random.randrange(1, 4, 1))
+            quantities.append(random.randrange(1, 4, 1))
+            self.shoppingcart.add_item_quantity(products[i], quantities[i])
+            self.handle_kw_args['receipt'].add_product(
+                products[i], quantities[i], unit_prices[i], quantities[i] * unit_prices[i])
+
         self.shoppingcart.handle_offers(**self.handle_kw_args)
 
         self.assertEqual(len(self.handle_kw_args['receipt'].discounts), len(products))
@@ -147,6 +158,9 @@ class SharedHandleOffersSetups:
 
         self.shoppingcart = ShoppingCart()
         self.shoppingcart.add_item_quantity(self.product, quantity)
+
+        self.handle_kw_args['receipt'].add_product(self.product, quantity, self.unit_price, quantity * self.unit_price)
+
         self.shoppingcart.handle_offers(**self.handle_kw_args)
 
 
@@ -164,10 +178,11 @@ class TestShoppingCartHandleOffersThreeForTwo(unittest.TestCase, SharedHandleOff
     def test_discount_correct_amount_to_pay_two_for_three_items_in_cart(self):
         self._set_up_kw_args_and_add_product('toothbrush', 0.99, '', 3, mdl_objcts.ProductUnit.EACH,
                                              mdl_objcts.SpecialOfferType.THREE_FOR_TWO)
-        self.shoppingcart.handle_offers(**self.handle_kw_args)
 
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount,
                                -self.unit_price, places=3)
+
+        # TODO: expected total value
 
 
 class TestShoppingCartHandleOffersOfPercentDiscount(unittest.TestCase, SharedHandleOffersSetups):
@@ -181,6 +196,8 @@ class TestShoppingCartHandleOffersOfPercentDiscount(unittest.TestCase, SharedHan
         expected = -percent / 100 * self.unit_price
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
 
+        # TODO: expected total value
+
 
 class TestShoppingCartHandleOffersOfTwoForAmount(unittest.TestCase, SharedHandleOffersSetups):
     def test_discounts_for_two_quantities_item_with_offer_price_two_for_amount(self):
@@ -188,6 +205,8 @@ class TestShoppingCartHandleOffersOfTwoForAmount(unittest.TestCase, SharedHandle
                                              mdl_objcts.SpecialOfferType.TWO_FOR_AMOUNT)
         expected = -0.39  # TODO: do math to get this value
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
+
+        # TODO: expected total value.
 
     def test_no_discounts_for_less_quantities_item_with_offer_price_two_for_amount(self):
         self._set_up_kw_args_and_add_product('cherrytomatoes', 0.69, 0.99, 1, mdl_objcts.ProductUnit.EACH,
@@ -202,7 +221,55 @@ class TestShoppingCartHandleOffersOfFiveForAmount(unittest.TestCase, SharedHandl
         expected = -1.46  # TODO: do math to get this value
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
 
+        # TODO: expected total value.
+
     def test_no_discounts_for_less_quantities_item_with_offer_price_five_for_amount(self):
         self._set_up_kw_args_and_add_product('toothpaste', 1.79, 7.49, 4, mdl_objcts.ProductUnit.EACH,
                                              mdl_objcts.SpecialOfferType.FIVE_FOR_AMOUNT)
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
+
+
+class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):  # TODO: this needs some serious refactoring.
+    def setUp(self):
+        self.products = [mdl_objcts.Product('toothpaste', mdl_objcts.ProductUnit.EACH),
+                         mdl_objcts.Product('toothbrush', mdl_objcts.ProductUnit.EACH)]
+        self.bndl_discounts = [round(random.random() * 10, 2) for i in range(len(self.products))]
+        self.unit_prices = [round(random.random() * 5, 2) for _ in range(len(self.products))]
+
+        self.offers = {self.products[i]: mdl_objcts.Offer(
+            mdl_objcts.SpecialOfferType.BUNDLE_DISCOUNT, self.products[i], self.bndl_discounts[i]
+        ) for i in range(len(self.products))}
+        self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
+        for i in range(len(self.products)):
+            self.handle_kw_args['catalog'].add_product(self.products[i], self.unit_prices[i])
+        self.shoppingcart = ShoppingCart()
+
+    def test_two_unique_product_items_with_quantity_of_one_each_get_full_bundle_discount(self):
+        quantities = [1, 1]
+        for i in range(len(self.products)):
+            self.shoppingcart.add_item_quantity(self.products[i], quantities[i])
+            self.handle_kw_args['receipt'].add_product(
+                self.products[i], quantities[i], self.unit_prices[i], quantities[i] * self.unit_prices[i])
+        self.shoppingcart.handle_offers(**self.handle_kw_args)
+        total_price = self.handle_kw_args['receipt'].total_price()
+        expected_discount = sum([self.unit_prices[i] * -self.bndl_discounts[i] / 100 for i in range(len(self.products))])
+        total_expected_price = sum([self.unit_prices[i] * quantities[i] for i in range(len(self.products))]) + expected_discount
+
+        self.assertEqual(expected_discount,
+                         sum([self.handle_kw_args['receipt'].discounts[i].discount_amount for i in range(len(self.products))]))
+        self.assertAlmostEqual(total_price, total_expected_price, places=2)
+
+    def test_two_unique_product_items_with_multiple_quantities_of_one_each_get_partial_bundle_discount(self):
+        quantities = [random.randrange(1, 8, 1) for _ in range(len(self.products))]
+        for i in range(len(self.products)):
+            self.shoppingcart.add_item_quantity(self.products[i], quantities[i])
+            self.handle_kw_args['receipt'].add_product(
+                self.products[i], quantities[i], self.unit_prices[i], quantities[i] * self.unit_prices[i])
+        self.shoppingcart.handle_offers(**self.handle_kw_args)
+        total_price = self.handle_kw_args['receipt'].total_price()
+        expected_discount = sum([self.unit_prices[i] * -self.bndl_discounts[i] / 100 for i in range(len(self.products))])
+        total_expected_price = sum([self.unit_prices[i] * quantities[i] for i in range(len(self.products))]) + expected_discount
+
+        self.assertEqual(expected_discount,
+                         sum([self.handle_kw_args['receipt'].discounts[i].discount_amount for i in range(len(self.products))]))
+        self.assertAlmostEqual(total_price, total_expected_price, places=2)

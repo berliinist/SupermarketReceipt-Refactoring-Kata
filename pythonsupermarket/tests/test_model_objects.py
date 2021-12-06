@@ -34,8 +34,7 @@ class TestProductQuantity(unittest.TestCase):
 
 
     def test_assert_product_attribute_of_product_quantity(self):
-        self.assertEqual(self.productquantity_class.product._extract_mock_name(), self.product_dict['name'])
-            # TODO: there must be a better approach to access name without calling _extract_mock_name(), but not now.
+        self.assertEqual(self.productquantity_class.product._extract_mock_name(), self.product_dict['name'])  # TODO: find a different approach without calling private method
         self.assertEqual(self.productquantity_class.product.unit, self.product_dict['unit'])
 
     def test_assert_quantity_attribute_of_product_quantity(self):
