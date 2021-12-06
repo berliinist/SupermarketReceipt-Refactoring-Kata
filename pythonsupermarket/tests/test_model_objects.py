@@ -88,9 +88,12 @@ class TestSpecialOfferType(unittest.TestCase):
     def test_assert_special_offer_type_of_four_equals_five_for_amount(self):
         self.assertEqual(self.class_enum(4), mdl_objcts.SpecialOfferType.FIVE_FOR_AMOUNT)
 
-    def test_raises_error_if_special_offer_type_is_five(self):
+    def test_assert_special_offer_type_of_five_equals_bundle_discount(self):
+        self.assertEqual(self.class_enum(5), mdl_objcts.SpecialOfferType.BUNDLE_DISCOUNT)
+
+    def test_raises_error_if_special_offer_type_is_six(self):
         with self.assertRaises(ValueError):
-            self.class_enum(5)
+            self.class_enum(6)
 
 
 @pytest.mark.skip(reason="higher priorities elsewhere for now. please rely on integrated tests for now.")
