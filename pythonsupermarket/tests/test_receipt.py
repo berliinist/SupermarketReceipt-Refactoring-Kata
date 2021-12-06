@@ -22,7 +22,7 @@ class TestReceiptItemIntegration(unittest.TestCase, SharedUnitTests):
         self.product_quantity = random.randrange(1, 50, 1)
         self.price = round(random.random() * 100, 2)
         self.total_price = max(self.price, round(random.random() * 200, 2))
-        self.test_class = receipt.ReceiptItem(product=mdl_objcts.Product(**cp.deepcopy(self.product_dict)),
+        self.test_class = receipt.ReceiptItem(product=mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict)),
                                               quantity=self.product_quantity,
                                               price=self.price,
                                               total_price=self.total_price)
@@ -48,7 +48,7 @@ class TestReceiptIntegration(unittest.TestCase):
 
     def _set_up_kw_args_of_each_product_in_list(self, nr_items):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
-        self.kw_args_list = [{'product': mdl_objcts.Product(**cp.deepcopy(self.product_dicts_list[i])),
+        self.kw_args_list = [{'product': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1),
                               'price': round(random.random() * 100, 2),
                               'total_price': round(random.random() * 200, 2)} for i, _ in enumerate(range(nr_items))]
@@ -56,7 +56,7 @@ class TestReceiptIntegration(unittest.TestCase):
     def _set_up_kw_args_of_each_discount_in_list(self, nr_items):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
         self.kw_args_disc_list = [
-            {'product': mdl_objcts.Product(**cp.deepcopy(self.product_dicts_list[i])),
+            {'product': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
              'description': f'Some discount number {i+1}',
              'discount_amount': round(random.random() * -10, 2)} for i, _ in enumerate(range(nr_items))]
 

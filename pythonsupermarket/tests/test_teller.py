@@ -6,7 +6,7 @@ from parameterized import parameterized
 import pytest
 
 from pythonsupermarket.fake_catalog import FakeCatalog
-from pythonsupermarket.model_objects import SpecialOfferType, Product, Offer
+from pythonsupermarket.model_objects import SpecialOfferType, ProductInfo, Offer
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.teller import Teller
 
@@ -34,8 +34,8 @@ class TestTellerIntegration(unittest.TestCase):
 
     def _create_a_list_of_products_and_add_to_catalog(self, nr_products):
         self.prod_catalog_dicts_list = [set_up_product_catalog_dict() for _ in range(nr_products)]
-        self.products = [Product(name=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].name),
-                                 unit=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].unit))
+        self.products = [ProductInfo(name=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].name),
+                                     unit=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].unit))
                          for i in range(nr_products)]
         for i in range(nr_products):
             self.catalog.add_product(self.products[i], cp.deepcopy(self.prod_catalog_dicts_list[i]['price_per_unit']))
