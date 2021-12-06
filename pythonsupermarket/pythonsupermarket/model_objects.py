@@ -2,9 +2,10 @@ from enum import Enum
 
 
 class ProductInfo:  # TODO: introduce price_per_unit, unit_type here? rename to ProductInfo?
-    def __init__(self, name, unit):
+    def __init__(self, name, unit, price_per_unit):
         self._name = name
         self._unit = unit
+        self._price_per_unit = price_per_unit
 
     @property
     def name(self):
@@ -13,6 +14,10 @@ class ProductInfo:  # TODO: introduce price_per_unit, unit_type here? rename to 
     @property
     def unit(self):
         return self._unit
+
+    @property
+    def price_per_unit(self):
+        return self._price_per_unit
 
 
 class ProductQuantity:  # TODO: what for?

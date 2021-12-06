@@ -112,13 +112,13 @@ class TestShoppingCartIntegration(unittest.TestCase):
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
 
     def test_no_discounts_for_wrong_items_in_cart(self):
-        p_not_in_cart = mdl_objcts.ProductInfo("toothbrush", mdl_objcts.ProductUnit.EACH)
-        p_in_cart = mdl_objcts.ProductInfo("toothpaste", mdl_objcts.ProductUnit.EACH)
+        p_not_in_cart = mdl_objcts.ProductInfo("toothbrush", mdl_objcts.ProductUnit.EACH, 9.99)
+        p_in_cart = mdl_objcts.ProductInfo("toothpaste", mdl_objcts.ProductUnit.EACH, 3)
         self.handle_kw_args.update({'offers':
             {p_not_in_cart: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.THREE_FOR_TWO, p_not_in_cart, 10.0)},
                                     'catalog': FakeCatalog()})
-        for p, unit_price in [(p_not_in_cart, 9.99), (p_in_cart, 3)]:
-            self.handle_kw_args['catalog'].add_product(p, unit_price)
+        for p in [p_not_in_cart, p_in_cart]:
+            self.handle_kw_args['catalog'].add_product(p)
 
 
         self.shoppingcart.add_item_quantity(p_in_cart, 5)
@@ -129,13 +129,14 @@ class TestShoppingCartIntegration(unittest.TestCase):
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
 
     def test_assert_correct_multiple_discounts_length_unaffected_by_repeat_of_add_same_item_quantity(self):
-        products = [mdl_objcts.ProductInfo(f'Special{i}', mdl_objcts.ProductUnit.EACH) for i in range(3)]
+        unit_prices = []
+        for i in range(3):
+            unit_prices.append(random.random() * 10)
+        products = [mdl_objcts.ProductInfo(f'Special{i}', mdl_objcts.ProductUnit.EACH, unit_prices[i]) for i in range(3)]
         self.offers = {product: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT, product, 12) for product in products}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
-        unit_prices = []
-        for p in products:
-            unit_prices.append(random.random() * 10)
-            self.handle_kw_args['catalog'].add_product(p, unit_prices[-1])
+        for i, p in enumerate(products):
+            self.handle_kw_args['catalog'].add_product(p)  # TODO: remove unit prices from catalog?
         quantities = []
         for i in range(len(products)):
             quantities.append(random.randrange(1, 4, 1))
@@ -150,11 +151,11 @@ class TestShoppingCartIntegration(unittest.TestCase):
 
 class SharedHandleOffersSetups:
     def _set_up_kw_args_and_add_product(self, name, unit_price, offer_arg, quantity, p_type, offer_type):
-        self.product = mdl_objcts.ProductInfo(name, p_type)
+        self.product = mdl_objcts.ProductInfo(name, p_type, unit_price)
         self.offers = {self.product: mdl_objcts.Offer(offer_type, self.product, offer_arg)}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
         self.unit_price = unit_price
-        self.handle_kw_args['catalog'].add_product(self.product, self.unit_price)
+        self.handle_kw_args['catalog'].add_product(self.product)
 
         self.shoppingcart = ShoppingCart()
         self.shoppingcart.add_item_quantity(self.product, quantity)
@@ -231,17 +232,18 @@ class TestShoppingCartHandleOffersOfFiveForAmount(unittest.TestCase, SharedHandl
 
 class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):  # TODO: this needs some serious refactoring.
     def setUp(self):
-        self.products = [mdl_objcts.ProductInfo('toothpaste', mdl_objcts.ProductUnit.EACH),
-                         mdl_objcts.ProductInfo('toothbrush', mdl_objcts.ProductUnit.EACH)]
+        self.unit_prices = [round(random.random() * 50, 2) for _ in range(2)]
+        self.products = [mdl_objcts.ProductInfo('toothpaste', mdl_objcts.ProductUnit.EACH, self.unit_prices[0]),
+                         mdl_objcts.ProductInfo('toothbrush', mdl_objcts.ProductUnit.EACH, self.unit_prices[1])]
         self.bndl_discounts = [round(random.random() * 10, 2) for i in range(len(self.products))]
-        self.unit_prices = [round(random.random() * 5, 2) for _ in range(len(self.products))]
+
 
         self.offers = {self.products[i]: mdl_objcts.Offer(
             mdl_objcts.SpecialOfferType.BUNDLE_DISCOUNT, self.products[i], self.bndl_discounts[i]
         ) for i in range(len(self.products))}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
         for i in range(len(self.products)):
-            self.handle_kw_args['catalog'].add_product(self.products[i], self.unit_prices[i])
+            self.handle_kw_args['catalog'].add_product(self.products[i])
         self.shoppingcart = ShoppingCart()
 
     def test_two_unique_product_items_with_quantity_of_one_each_get_full_bundle_discount(self):

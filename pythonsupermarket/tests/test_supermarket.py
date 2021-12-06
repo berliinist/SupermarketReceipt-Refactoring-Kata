@@ -9,11 +9,11 @@ from pythonsupermarket.fake_catalog import FakeCatalog
 class TestTenPercentDiscount(unittest.TestCase):
     def setUp(self):
         catalog = FakeCatalog()
-        toothbrush = ProductInfo("toothbrush", ProductUnit.EACH)
-        catalog.add_product(toothbrush, 0.99)
+        toothbrush = ProductInfo("toothbrush", ProductUnit.EACH, 0.99)
+        catalog.add_product(toothbrush)
 
-        self.apples = ProductInfo("apples", ProductUnit.KILO)
-        catalog.add_product(self.apples, 1.99)
+        self.apples = ProductInfo("apples", ProductUnit.KILO, 1.99)
+        catalog.add_product(self.apples)
 
         teller = Teller(catalog)
         teller.add_special_offer(SpecialOfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0)

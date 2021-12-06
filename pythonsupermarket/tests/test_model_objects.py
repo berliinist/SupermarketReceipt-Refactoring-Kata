@@ -12,7 +12,7 @@ import pythonsupermarket.model_objects as mdl_objcts
 from tests.shared_test_functions import set_up_product_dict, SharedUnitTests
 
 
-class TestProductInfo(unittest.TestCase):
+class TestProductInfo(unittest.TestCase):  # TODO: price_per_unit include
     def setUp(self):
         self.product_dict = set_up_product_dict()
         self.product_class = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
