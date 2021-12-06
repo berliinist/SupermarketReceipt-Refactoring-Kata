@@ -15,7 +15,7 @@ class ProductInfo:  # TODO: introduce price_per_unit, unit_type here? rename to 
     def unit(self):
         return self._unit
 
-    @property
+    @property  # TODO: missing unit tests likely. follow hybrid-TDD.
     def price_per_unit(self):
         return self._price_per_unit
 

@@ -4,7 +4,6 @@ from pythonsupermarket.catalog import SupermarketCatalog
 class FakeCatalog(SupermarketCatalog):
     def __init__(self):
         self.products = {}
-        self.prices = {}
 
         # TODO: Probably the best way to go is this:
         # catalog.products = {name: {'name': name, 'per_unit_type': per_unit_type, 'price_per_unit': price_per_unit},
@@ -12,7 +11,6 @@ class FakeCatalog(SupermarketCatalog):
 
     def add_product(self, product):  # TODO: price_per_unit? rename to add_product_info (just an information in catalog...)
         self.products[product.name] = product
-        self.prices[product.name] = product.price_per_unit  # price_per_unit  # TODO: this will be removed permanently?
 
     def unit_price(self, product):  # TODO: why does this exist? shall we remove it permanently?
-        return self.prices[product.name]
+        return product.price_per_unit

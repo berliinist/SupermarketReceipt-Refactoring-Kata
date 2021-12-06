@@ -26,7 +26,6 @@ class TestTellerIntegration(unittest.TestCase):
     def test_teller_initializes_with_empty_catalog_if_no_products_added_to_it(self):
         teller = Teller(self.catalog)
         self.assertDictEqual(teller.catalog.products, {})
-        self.assertDictEqual(teller.catalog.prices, {})
 
     def test_teller_initalizes_with_empty_offers(self):
         teller = Teller(self.catalog)

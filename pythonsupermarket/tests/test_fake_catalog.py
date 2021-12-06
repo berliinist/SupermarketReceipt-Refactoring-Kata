@@ -19,14 +19,8 @@ class TestFakeCatalog(unittest.TestCase):
     def test_products_is_dict_type(self):
         self.assertIsInstance(self.fakecatalog.products, dict)
 
-    def test_prices_is_dict_type(self):
-        self.assertIsInstance(self.fakecatalog.prices, dict)
-
     def test_initial_products_is_empty(self):
         self.assertEqual(len(self.fakecatalog.products), 0)
-
-    def test_initial_prices_is_empty(self):
-        self.assertEqual(len(self.fakecatalog.prices), 0)
 
     def test_calling_initial_unit_price_method_raises_error(self):
         product_catalog_not_added = set_up_product_catalog_dict()
@@ -38,7 +32,6 @@ class TestFakeCatalog(unittest.TestCase):
         self.fakecatalog.add_product(**catalog)
 
         self.assertDictEqual(self.fakecatalog.products, {catalog['product'].name: catalog['product']})
-        self.assertDictEqual(self.fakecatalog.prices, {catalog['product'].name: catalog['product'].price_per_unit})
 
     def test_add_product_is_functioning_correctly_by_asserting_first_added_multiple_product_catalogs(self):
         catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
@@ -47,8 +40,6 @@ class TestFakeCatalog(unittest.TestCase):
 
         self.assertDictEqual(self.fakecatalog.products,
                              {catalog['product'].name: catalog['product'] for catalog in catalogs})
-        self.assertDictEqual(self.fakecatalog.prices,
-                             {catalog['product'].name: catalog['product'].price_per_unit for catalog in catalogs})
 
     def test_unit_price_method_call_returns_value_of_a_product_catalog_correctly(self):
         catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
