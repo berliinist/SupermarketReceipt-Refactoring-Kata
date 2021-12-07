@@ -33,7 +33,7 @@ class TestTenPercentDiscount(unittest.TestCase):
         self.assertEqual(len(self.receipt.items), 1)
 
     def test_assert_item_is_apple(self):  # TODO: duplicate, but strong refactoring needed in test_receipt.py for it.
-        self.assertEqual(self.apples, self.receipt.items[0].product)
+        self.assertEqual(self.apples, self.receipt.items[0].item)
 
     def test_assert_normal_price_of_an_item_per_kilo(self):  # TODO: duplicate, though strong refactoring in test_receipt.py needed.
         self.assertEqual(self.receipt.items[0].unit_price, 1.99)

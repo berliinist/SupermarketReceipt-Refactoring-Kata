@@ -23,7 +23,7 @@ class Teller:
         receipt = Receipt()
         for item, quantity in the_cart.items.items():
             unit_price = self._catalog.get_product(item).price_per_unit
-            receipt.add_product(item, quantity, unit_price, quantity * unit_price)
+            receipt.add_item(item, quantity, unit_price, quantity * unit_price)
         the_cart.handle_offers(receipt, self._offers, self._catalog)
 
         return receipt

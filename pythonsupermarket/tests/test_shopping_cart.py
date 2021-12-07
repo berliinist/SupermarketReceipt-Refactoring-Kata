@@ -84,7 +84,7 @@ class TestShoppingCartIntegration(unittest.TestCase):
 
 
         self.shoppingcart.add_item_quantity(p_in_cart, 5)
-        self.handle_kw_args['receipt'].add_product(p_in_cart, 5, 3,
+        self.handle_kw_args['receipt'].add_item(p_in_cart, 5, 3,
                                                    15 * 3)  # REFACTOR: parameterize these constant values to more variable
         self.shoppingcart.handle_offers(**self.handle_kw_args)
 
@@ -103,7 +103,7 @@ class TestShoppingCartIntegration(unittest.TestCase):
         for i in range(len(products)):
             quantities.append(random.randrange(1, 4, 1))
             self.shoppingcart.add_item_quantity(products[i], quantities[i])
-            self.handle_kw_args['receipt'].add_product(
+            self.handle_kw_args['receipt'].add_item(
                 products[i], quantities[i], unit_prices[i], quantities[i] * unit_prices[i])
 
         self.shoppingcart.handle_offers(**self.handle_kw_args)
@@ -122,7 +122,7 @@ class SharedHandleOffersSetups:
         self.shoppingcart = ShoppingCart()
         self.shoppingcart.add_item_quantity(self.product, quantity)
 
-        self.handle_kw_args['receipt'].add_product(self.product, quantity, self.unit_price, quantity * self.unit_price)
+        self.handle_kw_args['receipt'].add_item(self.product, quantity, self.unit_price, quantity * self.unit_price)
 
         self.shoppingcart.handle_offers(**self.handle_kw_args)
 
@@ -212,7 +212,7 @@ class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):  # TOD
         quantities = [1, 1]
         for i in range(len(self.products)):
             self.shoppingcart.add_item_quantity(self.products[i], quantities[i])
-            self.handle_kw_args['receipt'].add_product(
+            self.handle_kw_args['receipt'].add_item(
                 self.products[i], quantities[i], self.unit_prices[i], quantities[i] * self.unit_prices[i])
         self.shoppingcart.handle_offers(**self.handle_kw_args)
         total_price = self.handle_kw_args['receipt'].total_price()
@@ -227,7 +227,7 @@ class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):  # TOD
         quantities = [random.randrange(1, 8, 1) for _ in range(len(self.products))]
         for i in range(len(self.products)):
             self.shoppingcart.add_item_quantity(self.products[i], quantities[i])
-            self.handle_kw_args['receipt'].add_product(
+            self.handle_kw_args['receipt'].add_item(
                 self.products[i], quantities[i], self.unit_prices[i], quantities[i] * self.unit_prices[i])
         self.shoppingcart.handle_offers(**self.handle_kw_args)
         total_price = self.handle_kw_args['receipt'].total_price()
