@@ -38,7 +38,7 @@ class Receipt:
     def add_item(self, item, quantity, unit_price, total_price):
         self._items.append(ReceiptItem(item, quantity, unit_price, total_price))
 
-    def add_discount(self, discount):
+    def add_discount(self, discount):  # TODO: discounts.append(Discount...)? Idea, but not now.
         if discount is not None:
             self._discounts.append(discount)
 
