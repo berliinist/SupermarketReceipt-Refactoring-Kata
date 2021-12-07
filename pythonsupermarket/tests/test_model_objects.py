@@ -27,35 +27,6 @@ class TestProductInfo(unittest.TestCase):
         self.assertEqual(self.product.price_per_unit, self.product_dict['price_per_unit'])
 
 
-class TestProductQuantity(unittest.TestCase):
-    def setUp(self):
-        self.product_dict = set_up_product_dict()
-        self.product_quantity = range(random.randrange(2, 50, 1))
-        self.product_class = Mock(spec_set=mdl_objcts.ProductInfo, **cp.deepcopy(self.product_dict))
-        self.productquantity_class = mdl_objcts.ProductQuantity(product=self.product_class,
-                                                                quantity=self.product_quantity)
-
-
-    def test_assert_product_attribute_of_product_quantity(self):
-        self.assertEqual(self.productquantity_class.product._extract_mock_name(), self.product_dict['name'])  # TODO: find a different approach without calling private method
-        self.assertEqual(self.productquantity_class.product.unit, self.product_dict['unit'])
-
-    def test_assert_quantity_attribute_of_product_quantity(self):
-        self.assertEqual(self.productquantity_class.quantity, self.product_quantity)
-
-
-class TestProductQuantityIntegration(unittest.TestCase, SharedUnitTests):
-    def setUp(self):
-        self.product_dict = set_up_product_dict()
-        self.product_quantity = range(random.randrange(2, 50, 1))
-        self.product_class = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
-        self.test_class = mdl_objcts.ProductQuantity(product=self.product_class,
-                                                     quantity=self.product_quantity)
-
-    def test_assert_quantity_attribute_of_product_quantity(self):
-        self.assertEqual(self.test_class.quantity, self.product_quantity)
-
-
 class TestProductUnit(unittest.TestCase):
     def setUp(self):
         self.class_enum = mdl_objcts.ProductUnit

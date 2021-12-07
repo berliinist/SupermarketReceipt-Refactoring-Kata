@@ -20,12 +20,6 @@ class ProductInfo:
         return self._price_per_unit
 
 
-class ProductQuantity:  # TODO: what for?
-    def __init__(self, product, quantity):
-        self.product = product
-        self.quantity = quantity
-
-
 class ProductUnit(Enum):
     EACH = 1
     KILO = 2
@@ -40,14 +34,14 @@ class SpecialOfferType(Enum):
 
 
 class Offer:
-    def __init__(self, offer_type, product, argument):
+    def __init__(self, offer_type, product, argument):  # TODO: remove this "product". what for?
         self.offer_type = offer_type
         self.product = product
         self.argument = argument
 
 
 class Discount:
-    def __init__(self, product, description, discount_amount):
+    def __init__(self, product, description, discount_amount):  # TODO: find out if this "product" still makes sense?
         self.product = product
         self.description = description
         self.discount_amount = discount_amount
