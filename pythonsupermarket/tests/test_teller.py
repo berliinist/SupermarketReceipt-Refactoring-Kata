@@ -39,10 +39,9 @@ class TestTellerIntegration(unittest.TestCase):
 
     def _create_offers_and_add_them_to_teller(self, nr_offers):
         for i in range(nr_offers):
-            offer = {'offer_type': SpecialOfferType.TEN_PERCENT_DISCOUNT,
-                     'product': self.products[i],
-                     'argument': round(random.random() * 10, 2)}
-            self.teller.add_special_offer(**offer)
+            self.teller.add_special_offer(offer_type=SpecialOfferType.TEN_PERCENT_DISCOUNT,
+                                          product=self.products[i],
+                                          argument=round(random.random() * 10, 2))
 
     @parameterized.expand([(1,), (3,)])
     def test_add_special_offer_adds_each_offer_correctly(self, nr_offers):

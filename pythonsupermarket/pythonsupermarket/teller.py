@@ -9,7 +9,7 @@ class Teller:
         self.offers = {}
 
     def add_special_offer(self, offer_type, product, argument):
-        self.offers[product] = Offer(offer_type, product, argument)  # TODO: perhaps offer_type and argument in Offer is enough?
+        self.offers[product] = Offer(offer_type, argument)
 
     def checks_out_articles_from(self, the_cart):
         receipt = Receipt()

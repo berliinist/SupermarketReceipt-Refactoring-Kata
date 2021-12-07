@@ -34,7 +34,7 @@ class SpecialOfferType(Enum):
 
 
 class Offer:
-    def __init__(self, offer_type, product, argument):  # TODO: remove this "product". what for?
+    def __init__(self, offer_type, argument):
         self.offer_type = offer_type
         self.argument = argument
 

@@ -78,11 +78,9 @@ class TestOffer(unittest.TestCase):
 class TestOfferIntegration(unittest.TestCase):
     def setUp(self):
         self.offer_type_value = random.randrange(1, 5)
-        self.product_dict = set_up_product_dict()
         self.argument = 'unsure what is this for'
 
         self.test_class = mdl_objcts.Offer(offer_type=mdl_objcts.SpecialOfferType(self.offer_type_value),
-                                            product=mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict)),
                                             argument=self.argument)
 
     def test_asserts_offer_type_setup_correctly(self):
