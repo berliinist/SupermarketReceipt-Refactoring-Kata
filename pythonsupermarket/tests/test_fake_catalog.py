@@ -6,7 +6,7 @@ import unittest
 from parameterized import parameterized
 import pytest
 
-from pythonsupermarket.catalog import TemplateCatalog
+from pythonsupermarket.template_catalog import TemplateCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog
 
 from tests.shared_test_functions import PRODUCT_NAMEDTUPLE, set_up_product_dict

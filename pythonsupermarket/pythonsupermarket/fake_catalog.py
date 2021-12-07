@@ -1,4 +1,4 @@
-from pythonsupermarket.catalog import TemplateCatalog
+from pythonsupermarket.template_catalog import TemplateCatalog
 
 
 class FakeCatalog(TemplateCatalog):
