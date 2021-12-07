@@ -11,11 +11,8 @@ def set_up_product_dict():
             'unit': random.choice([1, 2]),
             'price_per_unit': round(random.random() * 100, 2)}
 
-def set_up_product_catalog_dict():
-    return {'product': PRODUCT_NAMEDTUPLE(**set_up_product_dict())}  # TODO: remove this price_per_unit permanently?
-
 
 class SharedUnitTests:
-    def test_asserts_product_correctly(self):
+    def test_asserts_product_correctly(self):  # TODO: this is no longer necessary in long term (or strong refactoring needed).
         self.assertEqual(self.test_class.product.name, self.product_dict['name'])
         self.assertEqual(self.test_class.product.unit, self.product_dict['unit'])  # Do we really need this?

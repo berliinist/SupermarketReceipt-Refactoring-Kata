@@ -6,7 +6,7 @@ import unittest
 from parameterized import parameterized
 import pytest
 
-from pythonsupermarket.catalog import SupermarketCatalog
+from pythonsupermarket.catalog import TemplateCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog
 
 from tests.shared_test_functions import PRODUCT_NAMEDTUPLE, set_up_product_dict
@@ -17,7 +17,7 @@ class TestFakeCatalog(unittest.TestCase):
         self.fakecatalog = FakeCatalog()
 
     def test_fake_catalog_is_instance_of_supermarket_catalog(self):
-        self.assertIsInstance(self.fakecatalog, SupermarketCatalog)
+        self.assertIsInstance(self.fakecatalog, TemplateCatalog)
 
     def test_products_is_dict_type(self):
         self.assertIsInstance(self.fakecatalog.products, dict)

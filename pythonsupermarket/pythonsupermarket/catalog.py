@@ -1,7 +1,16 @@
-class SupermarketCatalog:
+from abc import ABCMeta, abstractmethod, abstractproperty
 
+
+class TemplateCatalog(metaclass=ABCMeta):
+
+    @abstractproperty
+    def products(self):
+        pass
+
+    @abstractmethod
     def add_product(self, product):
-        raise Exception("cannot be called from a unit test - it accesses the database")
+        pass
 
-    def unit_price(self, product):
-        raise Exception("cannot be called from a unit test - it accesses the database")
+    @abstractmethod
+    def get_product(self, product):
+        pass

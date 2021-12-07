@@ -1,7 +1,7 @@
-from pythonsupermarket.catalog import SupermarketCatalog
+from pythonsupermarket.catalog import TemplateCatalog
 
 
-class FakeCatalog(SupermarketCatalog):
+class FakeCatalog(TemplateCatalog):
     def __init__(self):
         self._products = {}
 
@@ -19,5 +19,5 @@ class FakeCatalog(SupermarketCatalog):
     def get_product(self, product):
         return self._products[product.name]
 
-    def unit_price(self, product):  # TODO: delete this method permanently.
-        return product.price_per_unit
+    # def unit_price(self, product):  # TODO: delete this method permanently.
+    #     return product.price_per_unit

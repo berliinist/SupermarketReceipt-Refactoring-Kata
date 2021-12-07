@@ -1,22 +1,32 @@
-from collections import namedtuple
-import random
-import string
 import unittest
 
-from pythonsupermarket.catalog import SupermarketCatalog
-
-from tests.shared_test_functions import set_up_product_catalog_dict
+from pythonsupermarket.catalog import TemplateCatalog
 
 
 class TestSupermarketCatalog(unittest.TestCase):
-    def setUp(self):
-        self.supermarketcatalog = SupermarketCatalog()
-        self.kw_args = set_up_product_catalog_dict()
+    def test_refuses_instantiating_templatecatalog(self):
+        with self.assertRaisesRegex(TypeError, "Can't instantiate"):
+            TemplateCatalog()
 
-    def test_calling_add_product_raises_exception(self):
-        with self.assertRaisesRegex(Exception, "accesses the database"):
-            self.supermarketcatalog.add_product(**self.kw_args)
+    def test_accepts_newcatalog_with_all_required_abstracts(self):
+        class NewCatalog(TemplateCatalog):
+            def products(self):
+                pass
 
-    def test_calling_unit_price_raises_exception(self):
-        with self.assertRaisesRegex(Exception, "accesses the database"):
-            self.supermarketcatalog.unit_price(self.kw_args['product'])
+            def add_product(self):
+                pass
+
+            def get_product(self):
+                pass
+        NewCatalog()
+
+    def test_rejects_new_catalog_with_missing_required_abstract(self):
+        class BadNewCatalog(TemplateCatalog):
+            def add_product(self):
+                pass
+
+            def get_product(self):
+                pass
+
+        with self.assertRaisesRegex(TypeError, "Can't instantiate"):
+            BadNewCatalog()
