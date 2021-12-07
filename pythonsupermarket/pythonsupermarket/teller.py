@@ -17,7 +17,7 @@ class Teller:
         for pq in product_quantities:
             p = pq.product
             quantity = pq.quantity
-            unit_price = self.catalog.unit_price(p)
+            unit_price = self.catalog.get_product(p).price_per_unit
             price = quantity * unit_price
             receipt.add_product(p, quantity, unit_price, price)  # TODO: total_price instead of price.
 

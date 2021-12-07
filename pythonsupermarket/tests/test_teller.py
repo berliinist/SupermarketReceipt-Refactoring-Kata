@@ -10,7 +10,7 @@ from pythonsupermarket.model_objects import SpecialOfferType, ProductInfo, Offer
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.teller import Teller
 
-from shared_test_functions import set_up_product_catalog_dict
+from shared_test_functions import set_up_product_dict
 
 
 @pytest.mark.skip(reason="lower priority currently")
@@ -32,11 +32,8 @@ class TestTellerIntegration(unittest.TestCase):
         self.assertDictEqual(teller.offers, {})
 
     def _create_a_list_of_products_and_add_to_catalog(self, nr_products):
-        self.prod_catalog_dicts_list = [set_up_product_catalog_dict() for _ in range(nr_products)]
-        self.products = [ProductInfo(name=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].name),
-                                     unit=cp.deepcopy(self.prod_catalog_dicts_list[i]['product'].unit),
-                                     price_per_unit=self.prod_catalog_dicts_list[i]['product'].price_per_unit)
-                         for i in range(nr_products)]
+        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_products)]
+        self.products = [ProductInfo(**cp.deepcopy(self.product_dicts_list[i])) for i in range(nr_products)]
         for i in range(nr_products):
             self.catalog.add_product(self.products[i])  # TODO: move price per unit elsewhere?
 
@@ -68,7 +65,7 @@ class TestTellerIntegration(unittest.TestCase):
         teller = Teller(self.catalog)
 
         receipt_result = teller.checks_out_articles_from(self.cart)
-        expected = sum(quantity[i] * self.prod_catalog_dicts_list[i]['product'].price_per_unit for i in range(nr_unique_products))
+        expected = sum(quantity[i] * self.product_dicts_list[i]['price_per_unit'] for i in range(nr_unique_products))
         self.assertAlmostEqual(receipt_result.total_price(), expected, places=2)
 
     def test_returns_empty_receipt_if_no_items_in_cart(self):

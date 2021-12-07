@@ -21,7 +21,7 @@ class Receipt:
         return total
 
     def add_product(self, product, quantity, price, total_price):  # TODO: should rather be product, quantity, total_price? this "price" is price per unit?
-        self._items.append(ReceiptItem(product, quantity, price, total_price))
+        self._items.append(ReceiptItem(product, quantity, price, total_price))  # DO: price_per_unit to avoid confusion.
 
     def add_discount(self, discount):
         self._discounts.append(discount)
