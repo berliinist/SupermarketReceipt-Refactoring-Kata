@@ -12,18 +12,19 @@ class ShoppingCart:
     def items(self):
         return self._items
 
-    def add_item_quantity(self, item, quantity):
+    def add_item_quantity(self, item, quantity):  # TODO: is there a maybe pythonic approach? find out.
         if item in self._items.keys():
             self._items[item] += quantity
         else:
             self._items[item] = quantity
 
     def handle_offers(self, receipt, offers, catalog):
-        for item, quantity in self._items.items():
-            if item in offers.keys():
-                discount = self._get_discount(offers[item], catalog, quantity, item)
-                if discount:
-                    receipt.add_discount(discount)
+        items_with_offers = set(self._items).intersection(set(offers))
+        for item in items_with_offers:
+            quantity = self._items[item]
+            discount = self._get_discount(offers[item], catalog, quantity, item)
+            if discount:  # TODO: perhaps adapt in receipt.py so we can ignore if check here?
+                receipt.add_discount(discount)
 
     def _get_discount(self, offer, catalog, quantity, p):  # TODO: there's still room for refactoring! break it into smaller pieces with checks for offer type subfunctions each
         quantity_as_int = int(quantity)
