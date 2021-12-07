@@ -3,10 +3,13 @@ import random
 import string
 import unittest
 
+from parameterized import parameterized
+import pytest
+
 from pythonsupermarket.catalog import SupermarketCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog
 
-from tests.shared_test_functions import set_up_product_catalog_dict
+from tests.shared_test_functions import PRODUCT_NAMEDTUPLE, set_up_product_dict
 
 
 class TestFakeCatalog(unittest.TestCase):
@@ -22,28 +25,30 @@ class TestFakeCatalog(unittest.TestCase):
     def test_initial_products_is_empty(self):
         self.assertEqual(len(self.fakecatalog.products), 0)
 
-    def test_calling_initial_unit_price_method_raises_error(self):
-        product_catalog_not_added = set_up_product_catalog_dict()
+    def test_changing_products_property_directly_raises_error(self):
         with self.assertRaises(AttributeError):
-            self.fakecatalog.unit_price(product_catalog_not_added)
+            self.fakecatalog.products = {}
 
-    def test_add_product_is_functioning_correctly_by_asserting_first_added_product_catalog(self):
-        catalog = set_up_product_catalog_dict()
-        self.fakecatalog.add_product(**catalog)
+    def test_calling_initial_get_product_method_raises_error(self):
+        product_catalog_not_added = PRODUCT_NAMEDTUPLE(**set_up_product_dict())
+        with self.assertRaises(KeyError):
+            self.fakecatalog.get_product(product_catalog_not_added)
 
-        self.assertDictEqual(self.fakecatalog.products, {catalog['product'].name: catalog['product']})
+    def _add_products(self, nr_add_products):
+        products = [PRODUCT_NAMEDTUPLE(**set_up_product_dict()) for _ in range(nr_add_products)]
+        for product in products:
+            self.fakecatalog.add_product(product)
+        return products
 
-    def test_add_product_is_functioning_correctly_by_asserting_first_added_multiple_product_catalogs(self):
-        catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
-        for product_catalog in catalogs:
-            self.fakecatalog.add_product(**product_catalog)
-
+    @parameterized.expand([(1, ), (random.randrange(2, 7, 1),)])
+    def test_assert_add_product_giving_products_property_correctly(self, nr_add_products):
+        products = self._add_products(nr_add_products)
         self.assertDictEqual(self.fakecatalog.products,
-                             {catalog['product'].name: catalog['product'] for catalog in catalogs})
+                             {product.name: product for product in products})
 
-    def test_unit_price_method_call_returns_value_of_a_product_catalog_correctly(self):
-        catalogs = [set_up_product_catalog_dict() for _ in range(random.randrange(2, 7, 1))]
-        for catalog in catalogs:
-            self.fakecatalog.add_product(**catalog)
-        for catalog in catalogs:
-            self.assertEqual(self.fakecatalog.unit_price(catalog['product']), catalog['product'].price_per_unit)
+    @parameterized.expand([(1,), (random.randrange(2, 7, 1),)])
+    def test_get_product_returns_product_correctly(self, nr_add_products):
+        products = self._add_products(nr_add_products)
+        for product in products:
+            received_product = self.fakecatalog.get_product(product)
+            self.assertEqual(received_product, product)
