@@ -55,13 +55,15 @@ class TestTellerIntegration(unittest.TestCase):
             self.assertEqual(self.teller.offers[product].product.name, product.name)  # TODO: this approach looks fishy, get code cleanup.
             self.assertEqual(self.teller.offers[product].product.unit, product.unit)  # TODO
 
+            # TODO: self.teller.offers[product].name more preferred than self.teller.offers[product].product.name
+
     @parameterized.expand([(1,), (3,)])
     def test_assert_checks_out_articles_and_returns_receipt_successfully(self, nr_unique_products):
         self._create_a_list_of_products_and_add_to_catalog(nr_unique_products)
         quantity = []
         for i in range(nr_unique_products):
             quantity.append(round(random.random() * 10, 2))
-            self.cart.add_item_quantity(product=cp.deepcopy(self.products[i]), quantity=quantity[-1])
+            self.cart.add_item_quantity(item=cp.deepcopy(self.products[i]), quantity=quantity[-1])
         teller = Teller(self.catalog)
 
         receipt_result = teller.checks_out_articles_from(self.cart)

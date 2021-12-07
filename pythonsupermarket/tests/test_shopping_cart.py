@@ -23,89 +23,51 @@ class TestShoppingCartIntegration(unittest.TestCase):
         self.shoppingcart = ShoppingCart()
         self.handle_kw_args = {'receipt': Receipt(), 'offers': {}, 'catalog': FakeCatalog()}
 
-    def _set_up_kw_args_of_each_productquantity_in_list(self, nr_items):
+    def _set_up_kw_args_for_each_item(self, nr_items):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
-        self.kw_args_list = [{'product': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
+        self.kw_args_list = [{'item': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1)} for i in range(nr_items)]
 
-    def test_initial_list_of_items_is_empty(self):
-        self.assertListEqual(self.shoppingcart.items, [])
+    def test_initial_dict_of_items_is_empty(self):
+        self.assertDictEqual(self.shoppingcart.items, {})
 
-    def test_initial_dict_of_product_quantities_is_empty(self):
-        self.assertDictEqual(self.shoppingcart.product_quantities, {})
-
-    def test_item_added_in_list_of_items_is_instance_of_productquantity(self):
-        self._set_up_kw_args_of_each_productquantity_in_list(1)
+    def test_item_added_in_dict_of_items_is_instance_of_productinfo(self):
+        self._set_up_kw_args_for_each_item(1)
         self.shoppingcart.add_item_quantity(**self.kw_args_list[0])
-        self.assertIsInstance(self.shoppingcart.items[0], mdl_objcts.ProductQuantity)
-
-    @parameterized.expand([(1,), (7,)])
-    def test_assert_add_item_quantity_yields_correct_number_of_different_items_and_quantities_each(self, nr_items):
-        self._set_up_kw_args_of_each_productquantity_in_list(nr_items)
-        for i in range(nr_items):
-            self.shoppingcart.add_item_quantity(**self.kw_args_list[i])
-        expected_names = [self.product_dicts_list[i]['name'] for i in range(nr_items)]
-        expected_quantities = [self.kw_args_list[i]['quantity'] for i in range(nr_items)]
-
-        self.assertListEqual([self.shoppingcart.items[i].product.name for i in range(nr_items)], expected_names)
-        self.assertListEqual([self.shoppingcart.items[i].quantity for i in range(nr_items)], expected_quantities)
+        self.assertIsInstance(list(self.shoppingcart.items.keys())[0], mdl_objcts.ProductInfo)
 
     @parameterized.expand([(1,), (7,)])
     def test_assert_add_item_quantity_yields_correct_number_of_total_quantities_in_each_product(self, nr_items):
-        self._set_up_kw_args_of_each_productquantity_in_list(nr_items)
+        self._set_up_kw_args_for_each_item(nr_items)
+        expected = cp.copy({(self.kw_args_list[i]['item']): self.kw_args_list[i]['quantity'] for i in range(nr_items)})
         for i in range(nr_items):
             self.shoppingcart.add_item_quantity(**self.kw_args_list[i])
-        expected_dict = {self.kw_args_list[i]['product']: self.kw_args_list[i]['quantity'] for i in range(nr_items)}
-        self.assertDictEqual(self.shoppingcart.product_quantities, expected_dict)
+        self.assertDictEqual(self.shoppingcart.items, expected)
 
-    def _add_items_initially_and_repeatedly_and_return_expected_cart_items_lists(self, nr_items):
+    def _add_items_initally_and_repeatedly_and_return_expected_items(self, nr_items):
         for i in range(nr_items):
             self.shoppingcart.add_item_quantity(**self.kw_args_list[i])
-        add_qts = [{'product': self.kw_args_list[i]['product'],
+        add_qts = [{'item': self.kw_args_list[i]['item'],
                     'quantity': random.randrange(0, 5, 1)} for i in range(nr_items - 1)]
+        expected = cp.copy({self.kw_args_list[i]['item']: self.kw_args_list[i]['quantity'] + add_qts[i]['quantity']
+                            for i in range(nr_items - 1)})
+        expected.update({self.kw_args_list[nr_items - 1]['item']: self.kw_args_list[nr_items -1]['quantity']})
         for i in range(len(add_qts)):
             self.shoppingcart.add_item_quantity(**add_qts[i])
-        expected_names_list = [self.product_dicts_list[i]['name'] for i in range(nr_items)] + \
-                              [add_qts[i]['product'].name for i in range(nr_items - 1)]
-        expected_qts_list = [self.kw_args_list[i]['quantity'] for i in range(nr_items)] + \
-                            [add_qts[i]['quantity'] for i in range(nr_items-1)]
-        return expected_names_list, expected_qts_list
-
-    def _add_items_initally_and_repeatedly_and_return_expected_product_quantities(self, nr_items):
-        for i in range(nr_items):
-            self.shoppingcart.add_item_quantity(**self.kw_args_list[i])
-        add_qts = [{'product': self.kw_args_list[i]['product'],
-                    'quantity': random.randrange(0, 5, 1)} for i in range(nr_items - 1)]
-        for i in range(len(add_qts)):
-            self.shoppingcart.add_item_quantity(**add_qts[i])
-        expected = {self.kw_args_list[i]['product']: self.kw_args_list[i]['quantity'] + add_qts[i]['quantity']
-                    for i in range(nr_items - 1)}
-        expected.update({self.kw_args_list[nr_items - 1]['product']: self.kw_args_list[nr_items -1]['quantity']})
         return expected
 
     @parameterized.expand([(1,), (6,)])
     def test_assert_add_item_quantity_repeatedly_to_some_items_yields_items_quantities_correctly(self, nr_items):
-        self._set_up_kw_args_of_each_productquantity_in_list(nr_items)
-        expected_names_list, expected_qts_list = \
-            self._add_items_initially_and_repeatedly_and_return_expected_cart_items_lists(nr_items)
-
-        self.assertListEqual([self.shoppingcart.items[i].product.name for i in range(nr_items * 2 - 1)],
-                             expected_names_list)
-        self.assertListEqual([self.shoppingcart.items[i].quantity for i in range(nr_items * 2 - 1)],
-                             expected_qts_list)
-
-    @parameterized.expand([(1,), (5,)])
-    def test_assert_add_item_quantity_repeatedly_to_some_items_yields_product_quantities_correctly(self, nr_items):
-        self._set_up_kw_args_of_each_productquantity_in_list(nr_items)
-        expected_dict = self._add_items_initally_and_repeatedly_and_return_expected_product_quantities(nr_items)
-        self.assertDictEqual(self.shoppingcart.product_quantities, expected_dict)
+        self._set_up_kw_args_for_each_item(nr_items)
+        expected = self._add_items_initally_and_repeatedly_and_return_expected_items(nr_items)
+        self.assertDictEqual(self.shoppingcart.items, expected)
 
     def test_discounts_not_added_if_handle_offers_without_product_quantities(self):
         self.shoppingcart.handle_offers(**self.handle_kw_args)
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
 
     def test_discounts_not_added_if_handle_offers_without_offers(self):
-        self._set_up_kw_args_of_each_productquantity_in_list(nr_items=1)
+        self._set_up_kw_args_for_each_item(nr_items=1)
         self.shoppingcart.add_item_quantity(**self.kw_args_list[0])
 
         self.shoppingcart.handle_offers(**self.handle_kw_args)
@@ -136,7 +98,7 @@ class TestShoppingCartIntegration(unittest.TestCase):
         self.offers = {product: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT, product, 12) for product in products}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
         for i, p in enumerate(products):
-            self.handle_kw_args['catalog'].add_product(p)  # TODO: remove unit prices from catalog?
+            self.handle_kw_args['catalog'].add_product(p)
         quantities = []
         for i in range(len(products)):
             quantities.append(random.randrange(1, 4, 1))

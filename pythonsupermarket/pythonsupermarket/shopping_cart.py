@@ -6,31 +6,22 @@ from pythonsupermarket.model_objects import ProductQuantity, SpecialOfferType, D
 class ShoppingCart:
 
     def __init__(self):
-        self._items = []
-        self._product_quantities = {}
+        self._items = {}
 
     @property
     def items(self):
         return self._items
 
-    @property
-    def product_quantities(self):
-        return self._product_quantities
-
-    def add_item_quantity(self, product, quantity):
-        self._items.append(ProductQuantity(product, quantity))
-        if product in self._product_quantities.keys():
-            self._product_quantities[product] += quantity
+    def add_item_quantity(self, item, quantity):
+        if item in self._items.keys():
+            self._items[item] += quantity
         else:
-            self._product_quantities[product] = quantity
+            self._items[item] = quantity
 
     def handle_offers(self, receipt, offers, catalog):
-        for p in self._product_quantities.keys():
-            quantity = self._product_quantities[p]
-            if p in offers.keys():
-                offer = offers[p]
-                discount = self._get_discount(offer, catalog, quantity, p)
-
+        for item, quantity in self._items.items():
+            if item in offers.keys():
+                discount = self._get_discount(offers[item], catalog, quantity, item)
                 if discount:
                     receipt.add_discount(discount)
 

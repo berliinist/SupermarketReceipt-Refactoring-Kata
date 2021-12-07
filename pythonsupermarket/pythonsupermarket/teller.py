@@ -9,18 +9,13 @@ class Teller:
         self.offers = {}
 
     def add_special_offer(self, offer_type, product, argument):
-        self.offers[product] = Offer(offer_type, product, argument)
+        self.offers[product] = Offer(offer_type, product, argument)  # TODO: perhaps offer_type and argument in Offer is enough?
 
     def checks_out_articles_from(self, the_cart):
         receipt = Receipt()
-        product_quantities = the_cart.items
-        for pq in product_quantities:
-            p = pq.product
-            quantity = pq.quantity
-            unit_price = self.catalog.get_product(p).price_per_unit
-            price = quantity * unit_price
-            receipt.add_product(p, quantity, unit_price, price)  # TODO: total_price instead of price.
-
+        for item, quantity in the_cart.items.items():
+            unit_price = self.catalog.get_product(item).price_per_unit
+            receipt.add_product(item, quantity, unit_price, quantity * unit_price)
         the_cart.handle_offers(receipt, self.offers, self.catalog)
 
         return receipt
