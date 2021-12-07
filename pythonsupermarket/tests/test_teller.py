@@ -70,12 +70,38 @@ class TestTellerIntegration(unittest.TestCase):
         quantity = []
         for i in range(nr_products):
             quantity.append(round(random.random() * 10, 2))
-            self.cart.add_item_quantity(item=cp.deepcopy(self.products[i]), quantity=quantity[-1])
+            self.cart.add_item_quantity(item=self.products[i], quantity=quantity[-1])
         teller = Teller(self.catalog)
 
         receipt = teller.checks_out_articles_from(self.cart)
         expected = sum(quantity[i] * self.product_dicts_list[i]['price_per_unit'] for i in range(nr_products))
         self.assertAlmostEqual(receipt.total_price(), expected, places=2)
+
+    @parameterized.expand([(1,), (3,)])
+    def test_checks_out_articles_with_one_article_percent_discounted_and_returns_receipt_correctly(self, nr_products):
+        self._create_products_and_call_add_product(nr_products)
+        kwargs = {'offer_type': SpecialOfferType.PERCENT_DISCOUNT, 'argument': round(random.random() * 10, 2)}
+        d_i = random.randrange(0, nr_products)
+
+        quantity = []
+        for i in range(nr_products):
+            quantity.append(round(random.random() * 10, 2))
+            self.cart.add_item_quantity(item=self.products[i], quantity=quantity[-1])
+
+        self.teller = Teller(self.catalog)
+        receipt = self.teller.checks_out_articles_from(self.cart)
+        total_price_before_discounts = receipt.total_price()
+
+        self.teller.add_special_offer(**kwargs, item=self.products[d_i])
+        receipt = self.teller.checks_out_articles_from(self.cart)
+        total_price_after_discounts = receipt.total_price()
+
+        self.assertLess(total_price_after_discounts, total_price_before_discounts)
+
+        expected = sum(quantity[i] * self.product_dicts_list[i]['price_per_unit'] for i in range(nr_products) if i != d_i)
+        expected += quantity[d_i] * self.product_dicts_list[d_i]['price_per_unit'] * (1 - kwargs['argument'] / 100.)
+
+        self.assertAlmostEqual(total_price_after_discounts, expected, 2)
 
     def test_returns_empty_receipt_if_no_items_in_cart(self):
         self._create_products_and_call_add_product(nr_products=3)
