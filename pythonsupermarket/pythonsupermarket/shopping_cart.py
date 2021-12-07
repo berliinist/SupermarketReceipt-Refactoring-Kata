@@ -73,6 +73,10 @@ class ShoppingCart:
             number_of_x = math.floor(int(quantity) / x)
             discount_total = price_per_unit * quantity - (
                     offer.argument * number_of_x + int(quantity) % 5 * price_per_unit)
+
+            total = offer.argument * number_of_x + int(quantity) % 5 * price_per_unit)
+            discount_total = price_per_unit * quantity - total
+
             return Discount(item, str(x) + " for " + str(offer.argument), -discount_total)
         return None
 
