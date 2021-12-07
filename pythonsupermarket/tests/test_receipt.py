@@ -122,6 +122,13 @@ class TestReceiptIntegration(unittest.TestCase):
                              [self.kw_args_list[i]['total_price'] for i in range(nr_items)])
 
     @parameterized.expand([(1,), (4,)])
+    def test_assert_no_discounts_added_if_discount_is_none(self, nr_items):
+        self._set_up_kw_args_of_each_discount_in_list(nr_items)
+        for i in range(nr_items):
+            self.receipt.add_discount(None)
+        self.assertEqual(len(self.receipt.discounts), 0)
+
+    @parameterized.expand([(1,), (4,)])
     def test_assert_number_of_discounts_added_returns_the_length_of_discounts_correctly(self, nr_items):
         self._set_up_kw_args_of_each_discount_in_list(nr_items)
         for i in range(nr_items):

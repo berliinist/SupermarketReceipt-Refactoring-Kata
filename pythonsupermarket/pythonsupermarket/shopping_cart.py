@@ -23,8 +23,7 @@ class ShoppingCart:
         for item in items_with_offers:
             quantity = self._items[item]
             discount = self._get_discount(offers[item], catalog, quantity, item)
-            if discount:  # TODO: perhaps adapt in receipt.py so we can ignore if check here?
-                receipt.add_discount(discount)
+            receipt.add_discount(discount)
 
     def _get_discount(self, offer, catalog, quantity, p):  # TODO: there's still room for refactoring! break it into smaller pieces with checks for offer type subfunctions each
         quantity_as_int = int(quantity)
@@ -62,4 +61,4 @@ class ShoppingCart:
             return Discount(p, str(offer.argument) + "% off for first unique item",
                             -price_per_unit * offer.argument / 100)
         else:
-            return None
+            None

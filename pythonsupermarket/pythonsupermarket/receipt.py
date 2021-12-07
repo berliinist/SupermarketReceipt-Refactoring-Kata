@@ -24,7 +24,8 @@ class Receipt:
         self._items.append(ReceiptItem(product, quantity, price, total_price))  # DO: price_per_unit to avoid confusion.
 
     def add_discount(self, discount):
-        self._discounts.append(discount)
+        if discount is not None:
+            self._discounts.append(discount)
 
     @property
     def items(self):
