@@ -12,16 +12,19 @@ import pythonsupermarket.model_objects as mdl_objcts
 from tests.shared_test_functions import set_up_product_dict, SharedUnitTests
 
 
-class TestProductInfo(unittest.TestCase):  # TODO: price_per_unit include
+class TestProductInfo(unittest.TestCase):
     def setUp(self):
         self.product_dict = set_up_product_dict()
-        self.product_class = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
+        self.product = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
 
-    def test_assert_name_property_of_product_class(self):
-        self.assertEqual(self.product_class.name, self.product_dict['name'])
+    def test_assert_name(self):
+        self.assertEqual(self.product.name, self.product_dict['name'])
 
-    def test_assert_per_unit_type_property_of_product_class(self):
-        self.assertEqual(self.product_class.unit, self.product_dict['unit'])
+    def test_assert_per_unit_type(self):
+        self.assertEqual(self.product.unit, self.product_dict['unit'])
+
+    def test_assert_price_per_unit(self):
+        self.assertEqual(self.product.price_per_unit, self.product_dict['price_per_unit'])
 
 
 class TestProductQuantity(unittest.TestCase):

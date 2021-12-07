@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ProductInfo:  # TODO: introduce price_per_unit, unit_type here? rename to ProductInfo?
+class ProductInfo:
     def __init__(self, name, unit, price_per_unit):
         self._name = name
         self._unit = unit
@@ -15,7 +15,7 @@ class ProductInfo:  # TODO: introduce price_per_unit, unit_type here? rename to 
     def unit(self):
         return self._unit
 
-    @property  # TODO: missing unit tests likely. follow hybrid-TDD.
+    @property
     def price_per_unit(self):
         return self._price_per_unit
 
