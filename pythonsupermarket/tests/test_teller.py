@@ -31,35 +31,32 @@ class TestTellerIntegration(unittest.TestCase):
         teller = Teller(self.catalog)
         self.assertDictEqual(teller.offers, {})
 
-    def _create_a_list_of_products_and_add_to_catalog(self, nr_products):
+    def _create_products_and_call_add_product(self, nr_products):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_products)]
         self.products = [ProductInfo(**cp.deepcopy(self.product_dicts_list[i])) for i in range(nr_products)]
         for i in range(nr_products):
-            self.catalog.add_product(self.products[i])  # TODO: move price per unit elsewhere?
+            self.catalog.add_product(self.products[i])
 
     def _create_offers_and_add_them_to_teller(self, nr_offers):
         for i in range(nr_offers):
-            offer = {'offer_type': SpecialOfferType.TEN_PERCENT_DISCOUNT, 'product': self.products[i],
+            offer = {'offer_type': SpecialOfferType.TEN_PERCENT_DISCOUNT,
+                     'product': self.products[i],
                      'argument': round(random.random() * 10, 2)}
             self.teller.add_special_offer(**offer)
 
     @parameterized.expand([(1,), (3,)])
-    def test_teller_add_special_offer_for_all_different_products(self, nr_offers):
-        self._create_a_list_of_products_and_add_to_catalog(nr_offers)
+    def test_add_special_offer_adds_each_offer_correctly(self, nr_offers):
+        self._create_products_and_call_add_product(nr_offers)
         self.teller = Teller(self.catalog)
         self._create_offers_and_add_them_to_teller(nr_offers)
 
         self.assertEqual(len(self.teller.offers), nr_offers)
         for product in self.products:
             self.assertIsInstance(self.teller.offers[product], Offer)
-            self.assertEqual(self.teller.offers[product].product.name, product.name)  # TODO: this approach looks fishy, get code cleanup.
-            self.assertEqual(self.teller.offers[product].product.unit, product.unit)  # TODO
-
-            # TODO: self.teller.offers[product].name more preferred than self.teller.offers[product].product.name
 
     @parameterized.expand([(1,), (3,)])
     def test_assert_checks_out_articles_and_returns_receipt_successfully(self, nr_unique_products):
-        self._create_a_list_of_products_and_add_to_catalog(nr_unique_products)
+        self._create_products_and_call_add_product(nr_unique_products)
         quantity = []
         for i in range(nr_unique_products):
             quantity.append(round(random.random() * 10, 2))
@@ -72,7 +69,7 @@ class TestTellerIntegration(unittest.TestCase):
 
     def test_returns_empty_receipt_if_no_items_in_cart(self):
         nr_unique_products = 3
-        self._create_a_list_of_products_and_add_to_catalog(nr_unique_products)
+        self._create_products_and_call_add_product(nr_unique_products)
         teller = Teller(self.catalog)
         receipt_result = teller.checks_out_articles_from(self.cart)
         self.assertEqual(receipt_result.total_price(), 0)

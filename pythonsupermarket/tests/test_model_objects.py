@@ -75,7 +75,7 @@ class TestOffer(unittest.TestCase):
         pass
 
 
-class TestOfferIntegration(unittest.TestCase, SharedUnitTests):
+class TestOfferIntegration(unittest.TestCase):
     def setUp(self):
         self.offer_type_value = random.randrange(1, 5)
         self.product_dict = set_up_product_dict()
