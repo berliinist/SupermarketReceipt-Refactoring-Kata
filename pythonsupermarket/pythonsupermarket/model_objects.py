@@ -27,19 +27,19 @@ class ProductUnit(Enum):
 
 class SpecialOfferType(Enum):
     THREE_FOR_TWO = 1
-    TEN_PERCENT_DISCOUNT = 2
+    PERCENT_DISCOUNT = 2
     TWO_FOR_AMOUNT = 3
     FIVE_FOR_AMOUNT = 4
     BUNDLE_DISCOUNT = 5
 
 
-class Offer:
+class Offer:  # TODO: offer type and argument, do not change them
     def __init__(self, offer_type, argument):
         self.offer_type = offer_type
         self.argument = argument
 
 
-class Discount:
+class Discount:  # TODO: all of these attributes should be unchangeable.
     def __init__(self, product, description, discount_amount):
         self.product = product
         self.description = description

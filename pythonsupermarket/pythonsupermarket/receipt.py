@@ -1,5 +1,5 @@
 
-class ReceiptItem:
+class ReceiptItem:  # TODO: make these attributes unchangeable
     def __init__(self, product, quantity, unit_price, total_price):
         self.product = product
         self.quantity = quantity

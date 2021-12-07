@@ -8,7 +8,7 @@ import pytest
 import pythonsupermarket.model_objects as mdl_objcts
 import pythonsupermarket.receipt as receipt
 
-from tests.shared_test_functions import set_up_product_dict, SharedUnitTests
+from tests.shared_test_functions import set_up_product_dict
 
 
 @pytest.mark.skip(reason="Mocked items of product class a lower priority at the moment.")
@@ -16,25 +16,26 @@ class TestReceiptItem(unittest.TestCase):
     pass
 
 
-class TestReceiptItemIntegration(unittest.TestCase, SharedUnitTests):
+class TestReceiptItemIntegration(unittest.TestCase):
     def setUp(self):
-        self.product_dict = set_up_product_dict()
-        self.product_quantity = random.randrange(1, 50, 1)
-        self.unit_price = round(random.random() * 100, 2)
-        self.total_price = max(self.unit_price, round(random.random() * 200, 2))
-        self.test_class = receipt.ReceiptItem(product=mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict)),
-                                              quantity=self.product_quantity,
-                                              unit_price=self.unit_price,
-                                              total_price=self.total_price)
+        self.kwargs = {'product':       mdl_objcts.ProductInfo(**cp.deepcopy(set_up_product_dict())),
+                       'quantity':      random.randrange(1, 50, 1),
+                       'unit_price':    round(random.random() * 100, 2),
+                       'total_price':   round(random.random() * 200, 2)}
+
+        self.test_class = receipt.ReceiptItem(**cp.copy(self.kwargs))
 
     def test_asserts_quantity(self):
-        self.assertEqual(self.test_class.quantity, self.product_quantity)
+        self.assertEqual(self.test_class.quantity, self.kwargs['quantity'])
 
     def test_asserts_unit_price(self):
-        self.assertEqual(self.test_class.unit_price, self.unit_price)
+        self.assertEqual(self.test_class.unit_price, self.kwargs['unit_price'])
 
     def test_asserts_total_price(self):
-        self.assertEqual(self.test_class.total_price, self.total_price)
+        self.assertEqual(self.test_class.total_price, self.kwargs['total_price'])
+
+    def test_asserts_product_correctly(self):
+        self.assertEqual(self.test_class.product, self.kwargs['product'])
 
 
 @pytest.mark.skip(reason="Mocked ReceiptItem of a lower priority currently.")

@@ -12,7 +12,7 @@ class ShoppingCart:
     def items(self):
         return self._items
 
-    def add_item_quantity(self, item, quantity):  # TODO: is there a maybe pythonic approach? find out.
+    def add_item_quantity(self, item, quantity):
         if item in self._items.keys():
             self._items[item] += quantity
         else:
@@ -31,7 +31,7 @@ class ShoppingCart:
         if offer.offer_type == SpecialOfferType.THREE_FOR_TWO:
             return self._discount_three_for_two(
                 item, price_per_unit, quantity)
-        elif offer.offer_type == SpecialOfferType.TEN_PERCENT_DISCOUNT:  # TODO: rename it to PERCENT_DISCOUNT (it can do 20% or any % discount too.
+        elif offer.offer_type == SpecialOfferType.PERCENT_DISCOUNT:
             return self._discount_percent_discount(
                 item, price_per_unit, quantity, offer)
         elif offer.offer_type == SpecialOfferType.TWO_FOR_AMOUNT:
@@ -71,7 +71,6 @@ class ShoppingCart:
         if int(quantity) >= 5:
             x = 5
             number_of_x = math.floor(int(quantity) / x)
-            total_price = price_per_unit * quantity
             discount_total = price_per_unit * quantity - (
                     offer.argument * number_of_x + int(quantity) % 5 * price_per_unit)
             return Discount(item, str(x) + " for " + str(offer.argument), -discount_total)

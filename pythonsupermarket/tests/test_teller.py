@@ -50,7 +50,7 @@ class TestTellerIntegration(unittest.TestCase):
     def _create_offers_to_add_to_teller_and_return_expected_kwargs(self, nr_offers):
         expected = {}
         for i in range(nr_offers):
-            kwargs = {'offer_type': random.choice([SpecialOfferType.TEN_PERCENT_DISCOUNT,
+            kwargs = {'offer_type': random.choice([SpecialOfferType.PERCENT_DISCOUNT,
                                                    SpecialOfferType.THREE_FOR_TWO,
                                                    SpecialOfferType.TWO_FOR_AMOUNT]),
                       'argument': round(random.random() * 10, 2)}

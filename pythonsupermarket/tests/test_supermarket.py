@@ -16,7 +16,7 @@ class TestTenPercentDiscount(unittest.TestCase):
         catalog.add_product(self.apples)
 
         teller = Teller(catalog)
-        teller.add_special_offer(SpecialOfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0)
+        teller.add_special_offer(SpecialOfferType.PERCENT_DISCOUNT, toothbrush, 10.0)
 
         cart = ShoppingCart()
         cart.add_item_quantity(self.apples, 2.5)

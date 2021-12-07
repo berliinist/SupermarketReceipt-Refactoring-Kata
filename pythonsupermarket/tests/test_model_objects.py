@@ -9,7 +9,7 @@ import pytest
 
 import pythonsupermarket.model_objects as mdl_objcts
 
-from tests.shared_test_functions import set_up_product_dict, SharedUnitTests
+from tests.shared_test_functions import set_up_product_dict
 
 
 class TestProductInfo(unittest.TestCase):
@@ -52,8 +52,8 @@ class TestSpecialOfferType(unittest.TestCase):
     def test_assert_special_offer_type_of_one_equals_three_for_two(self):
         self.assertEqual(self.class_enum(1), mdl_objcts.SpecialOfferType.THREE_FOR_TWO)
 
-    def test_assert_special_offer_type_of_two_equals_ten_percent_discount(self):
-        self.assertEqual(self.class_enum(2), mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT)
+    def test_assert_special_offer_type_of_two_equals_percent_discount(self):
+        self.assertEqual(self.class_enum(2), mdl_objcts.SpecialOfferType.PERCENT_DISCOUNT)
 
     def test_assert_special_offer_type_of_three_equals_two_for_amount(self):
         self.assertEqual(self.class_enum(3), mdl_objcts.SpecialOfferType.TWO_FOR_AMOUNT)
@@ -78,7 +78,7 @@ class TestOffer(unittest.TestCase):
 class TestOfferIntegration(unittest.TestCase):
     def setUp(self):
         self.offer_type_value = random.randrange(1, 5)
-        self.argument = 'unsure what is this for'
+        self.argument = 12349
 
         self.test_class = mdl_objcts.Offer(offer_type=mdl_objcts.SpecialOfferType(self.offer_type_value),
                                             argument=self.argument)
@@ -96,12 +96,12 @@ class TestDiscount(unittest.TestCase):
     pass
 
 
-class TestDiscountIntegration(unittest.TestCase, SharedUnitTests):
+class TestDiscountIntegration(unittest.TestCase):
     def setUp(self):
         self.product_dict = set_up_product_dict()
         self.test_class = mdl_objcts.Discount(product=mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict)),
-                                              description="It's a great discount!",
-                                              discount_amount="TODO, what exactly to put here?")
+                                              description="A great discount for Christmas!",
+                                              discount_amount=123457)
 
     @pytest.mark.skip(reason="Unsure in what format the description should be (for now)")
     def test_asserts_description_correctly(self):
@@ -110,3 +110,12 @@ class TestDiscountIntegration(unittest.TestCase, SharedUnitTests):
     @pytest.mark.skip(reason="Unsure in what format the discount amount should be (for now)")
     def test_asserts_discount_amount_correctly(self):
         pass
+
+    @pytest.mark.skip(reason="getting there, marking it to not forget here.")
+    def test_asserts_product_correctly(self):
+        pass
+
+    def test_asserts_product_correctly(self):  # TODO: this is no longer necessary in long term (or strong refactoring needed).
+        self.assertEqual(self.test_class.product.name, self.product_dict['name'])
+        self.assertEqual(self.test_class.product.unit, self.product_dict['unit'])  # Do we really need this?
+

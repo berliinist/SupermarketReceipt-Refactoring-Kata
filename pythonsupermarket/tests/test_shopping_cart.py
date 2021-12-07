@@ -95,7 +95,7 @@ class TestShoppingCartIntegration(unittest.TestCase):
         for i in range(3):
             unit_prices.append(random.random() * 10)
         products = [mdl_objcts.ProductInfo(f'Special{i}', mdl_objcts.ProductUnit.EACH, unit_prices[i]) for i in range(3)]
-        self.offers = {product: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT, 12) for product in products}
+        self.offers = {product: mdl_objcts.Offer(mdl_objcts.SpecialOfferType.PERCENT_DISCOUNT, 12) for product in products}
         self.handle_kw_args = {'receipt': Receipt(), 'offers': self.offers, 'catalog': FakeCatalog()}
         for i, p in enumerate(products):
             self.handle_kw_args['catalog'].add_product(p)
@@ -150,12 +150,12 @@ class TestShoppingCartHandleOffersThreeForTwo(unittest.TestCase, SharedHandleOff
 
 class TestShoppingCartHandleOffersOfPercentDiscount(unittest.TestCase, SharedHandleOffersSetups):
     def test_discount_list_length_of_one_for_specific_item_in_cart(self):
-        self._set_up_kw_args_and_add_product('rice', 2.49, 10, 1, mdl_objcts.ProductUnit.EACH, mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT)
+        self._set_up_kw_args_and_add_product('rice', 2.49, 10, 1, mdl_objcts.ProductUnit.EACH, mdl_objcts.SpecialOfferType.PERCENT_DISCOUNT)
         self.assertEqual(len(self.handle_kw_args['receipt'].discounts), 1)
 
     @parameterized.expand([('rice', 2.49, 10, mdl_objcts.ProductUnit.EACH), ('apple', 1.99, 20, mdl_objcts.ProductUnit.KILO)])
     def test_discount_correct_percent_for_specific_item_in_cart(self, product, unit_price, percent, p_type):
-        self._set_up_kw_args_and_add_product(product, unit_price, percent, 1, p_type, mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT)
+        self._set_up_kw_args_and_add_product(product, unit_price, percent, 1, p_type, mdl_objcts.SpecialOfferType.PERCENT_DISCOUNT)
         expected = -percent / 100 * self.unit_price
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
 

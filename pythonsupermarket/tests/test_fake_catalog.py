@@ -9,7 +9,10 @@ import pytest
 from pythonsupermarket.template_catalog import TemplateCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog
 
-from tests.shared_test_functions import PRODUCT_NAMEDTUPLE, set_up_product_dict
+from tests.shared_test_functions import set_up_product_dict
+
+
+PRODUCT_NAMEDTUPLE = namedtuple('product', ['name', 'unit', 'price_per_unit'])
 
 
 class TestFakeCatalog(unittest.TestCase):
