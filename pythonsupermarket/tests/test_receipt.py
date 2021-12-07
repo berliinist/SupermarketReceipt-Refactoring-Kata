@@ -54,7 +54,8 @@ class TestReceiptIntegration(unittest.TestCase):
 
     def _set_up_kwargs_of_each_item_in_list(self, nr_items):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
-        self.kw_args_list = [{'item': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
+        self.items = [mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])) for i in range(nr_items)]
+        self.kw_args_list = [{'item': self.items[i],
                               'quantity': random.randrange(1, 100, 1),
                               'unit_price': round(random.random() * 100, 2),
                               'total_price': round(random.random() * 200, 2)} for i, _ in enumerate(range(nr_items))]
@@ -94,6 +95,13 @@ class TestReceiptIntegration(unittest.TestCase):
             self.receipt.add_item(**self.kw_args_list[i])
         self.assertListEqual([self.receipt.items[i].item.name for i in range(nr_items)],
                              [self.product_dicts_list[i]['name'] for i in range(nr_items)])
+
+    @parameterized.expand([(1,), (8,)])
+    def test_assert_items_added_in_correct_order(self, nr_items):
+        self._set_up_kwargs_of_each_item_in_list(nr_items)
+        for i in range(nr_items):
+            self.receipt.add_item(**self.kw_args_list[i])
+        self.assertListEqual([self.receipt.items[i].item for i in range(nr_items)], self.items)
 
     @parameterized.expand([(1,), (7,)])
     def test_assert_item_unit_of_each_added_receipt_item(self, nr_items):
@@ -178,8 +186,8 @@ class TestReceiptIntegration(unittest.TestCase):
         self._set_up_kw_args_of_each_discount_in_list(nr_discounts)
         for i in range(nr_discounts):
             self.receipt.add_discount(mdl_objcts.Discount(**self.kw_args_disc_list[i]))
-        expected_total_discounts = round(sum([self.kw_args_disc_list[i]['discount_amount'] for i in range(nr_discounts)]), 2)
-        self.assertAlmostEqual(self.receipt.total_price(), expected_total_discounts, places=2)
+        expected = round(sum([self.kw_args_disc_list[i]['discount_amount'] for i in range(nr_discounts)]), 2)
+        self.assertAlmostEqual(self.receipt.total_price(), expected, places=2)
 
     @parameterized.expand([(1, 1), (1, 7), (7, 1)])
     def test_assert_total_price_after_adding_items_and_discounts(self, nr_items, nr_discounts):
