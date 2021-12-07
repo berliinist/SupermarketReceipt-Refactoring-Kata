@@ -1,72 +1,85 @@
 import math
 
-from pythonsupermarket.model_objects import ProductQuantity, SpecialOfferType, Discount
+from pythonsupermarket.model_objects import SpecialOfferType, Discount
 
 
 class ShoppingCart:
 
     def __init__(self):
-        self._items = []
-        self._product_quantities = {}
+        self._items = {}
 
     @property
     def items(self):
         return self._items
 
-    @property
-    def product_quantities(self):
-        return self._product_quantities
-
-    def add_item_quantity(self, product, quantity):
-        self._items.append(ProductQuantity(product, quantity))
-        if product in self._product_quantities.keys():
-            self._product_quantities[product] += quantity
+    def add_item_quantity(self, item, quantity):
+        if item in self._items.keys():
+            self._items[item] += quantity
         else:
-            self._product_quantities[product] = quantity
+            self._items[item] = quantity
 
     def handle_offers(self, receipt, offers, catalog):
-        for p in self._product_quantities.keys():
-            quantity = self._product_quantities[p]
-            if p in offers.keys():
-                offer = offers[p]
-                discount = self._get_discount(offer, catalog, quantity, p)
+        items_with_offers = set(self._items).intersection(set(offers))
+        for item in items_with_offers:
+            quantity = self._items[item]
+            discount = self._get_discount(offers[item], catalog, quantity, item)
+            receipt.add_discount(discount)
 
-                if discount:
-                    receipt.add_discount(discount)
+    def _get_discount(self, offer, catalog, quantity, item):
+        price_per_unit = catalog.get_product(item).price_per_unit
 
-    def _get_discount(self, offer, catalog, quantity, p):
-        quantity_as_int = int(quantity)
-        unit_price = catalog.unit_price(p)
-
-        def _get_x_denominator(offer_type):
-            if offer_type == SpecialOfferType.THREE_FOR_TWO:
-                return 3
-            elif offer_type == SpecialOfferType.TWO_FOR_AMOUNT:
-                return 2
-            elif offer_type == SpecialOfferType.FIVE_FOR_AMOUNT:
-                return 5
-            else:
-                return 1
-        x = _get_x_denominator(offer.offer_type)
-        number_of_x = math.floor(quantity_as_int / x)
-
-        if offer.offer_type == SpecialOfferType.THREE_FOR_TWO and quantity_as_int > 2:
-            discount_amount = quantity * unit_price - (
-                    (number_of_x * 2 * unit_price) + quantity_as_int % 3 * unit_price)
-            return Discount(p, "3 for 2", -discount_amount)
-        elif offer.offer_type == SpecialOfferType.TEN_PERCENT_DISCOUNT:  # TODO: rename it to PERCENT_DISCOUNT (it can do 20% or any % discount too.
-            return Discount(p, str(offer.argument) + "% off",
-                                -quantity * unit_price * offer.argument / 100.0)
-        elif offer.offer_type == SpecialOfferType.TWO_FOR_AMOUNT and quantity_as_int >= 2:
-            total = offer.argument * (quantity_as_int / x) + quantity_as_int % 2 * unit_price
-            discount_n = unit_price * quantity - total
-            return Discount(p, "2 for " + str(offer.argument), -discount_n)
-        elif offer.offer_type == SpecialOfferType.FIVE_FOR_AMOUNT and quantity_as_int >= 5:
-            discount_total = unit_price * quantity - (
-                    offer.argument * number_of_x + quantity_as_int % 5 * unit_price)
-            return Discount(p, str(x) + " for " + str(offer.argument), -discount_total)
+        if offer.offer_type == SpecialOfferType.THREE_FOR_TWO:
+            return self._discount_three_for_two(
+                item, price_per_unit, quantity)
+        elif offer.offer_type == SpecialOfferType.PERCENT_DISCOUNT:
+            return self._discount_percent_discount(
+                item, price_per_unit, quantity, offer)
+        elif offer.offer_type == SpecialOfferType.TWO_FOR_AMOUNT:
+            return self._discount_two_for_amount(
+                item, price_per_unit, quantity, offer)
+        elif offer.offer_type == SpecialOfferType.FIVE_FOR_AMOUNT:
+            return self._discount_five_for_amount(
+                item, price_per_unit, quantity, offer)
         elif offer.offer_type == SpecialOfferType.BUNDLE_DISCOUNT:
-            return Discount(p, str(offer.argument) + "% off for first unique item",
-                            -unit_price * offer.argument / 100)
+            return self._discount_bundle_discount(
+                item, price_per_unit, quantity, offer)
         else:
             return None
+
+    def _discount_three_for_two(self, item, price_per_unit, quantity):
+        if int(quantity) > 2:
+            x = 3
+            number_of_x = math.floor(int(quantity) / x)
+
+            total = (number_of_x * 2 * price_per_unit) + int(quantity) % 3 * price_per_unit
+            discount_amount = quantity * price_per_unit - total
+
+            return Discount(item, "3 for 2", -discount_amount)
+        return None
+
+    def _discount_percent_discount(self, item, price_per_unit, quantity, offer):
+        discount_amount = quantity * price_per_unit * offer.argument / 100.0
+        return Discount(item, str(offer.argument) + "% off", -discount_amount)
+
+    def _discount_two_for_amount(self, item, price_per_unit, quantity, offer):
+        if int(quantity) >= 2:
+            x = 2
+
+            total = offer.argument * (int(quantity) / x) + int(quantity) % 2 * price_per_unit
+            discount_n = price_per_unit * quantity - total
+            return Discount(item, "2 for " + str(offer.argument), -discount_n)
+        return None
+
+    def _discount_five_for_amount(self, item, price_per_unit, quantity, offer):
+        if int(quantity) >= 5:
+            x = 5
+            number_of_x = math.floor(int(quantity) / x)
+
+            total = offer.argument * number_of_x + int(quantity) % 5 * price_per_unit
+            discount_amount = price_per_unit * quantity - total
+            return Discount(item, str(x) + " for " + str(offer.argument), -discount_amount)
+        return None
+
+    def _discount_bundle_discount(self, item, price_per_unit, quantity, offer):
+        discount_amount = price_per_unit * offer.argument / 100
+        return Discount(item, str(offer.argument) + "% off for first unique item", -discount_amount)

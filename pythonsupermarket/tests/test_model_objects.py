@@ -2,55 +2,27 @@ import copy as cp
 import enum
 import random
 import unittest
-from unittest.mock import Mock, PropertyMock
 
 from parameterized import parameterized
-import pytest
 
 import pythonsupermarket.model_objects as mdl_objcts
 
-from tests.shared_test_functions import set_up_product_dict, SharedUnitTests
+from tests.shared_test_functions import set_up_product_dict, PRODUCT_NAMEDTUPLE
 
 
-class TestProduct(unittest.TestCase):
+class TestProductInfo(unittest.TestCase):
     def setUp(self):
         self.product_dict = set_up_product_dict()
-        self.product_class = mdl_objcts.Product(**cp.deepcopy(self.product_dict))
+        self.product = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
 
-    def test_assert_name_attribute_of_product_class(self):
-        self.assertEqual(self.product_class.name, self.product_dict['name'])
+    def test_assert_name(self):
+        self.assertEqual(self.product.name, self.product_dict['name'])
 
-    def test_assert_unit_attribute_of_product_class(self):
-        self.assertEqual(self.product_class.unit, self.product_dict['unit'])
+    def test_assert_per_unit_type(self):
+        self.assertEqual(self.product.unit, self.product_dict['unit'])
 
-
-class TestProductQuantity(unittest.TestCase):
-    def setUp(self):
-        self.product_dict = set_up_product_dict()
-        self.product_quantity = range(random.randrange(2, 50, 1))
-        self.product_class = Mock(spec_set=mdl_objcts.Product, **cp.deepcopy(self.product_dict))
-        self.productquantity_class = mdl_objcts.ProductQuantity(product=self.product_class,
-                                                                quantity=self.product_quantity)
-
-
-    def test_assert_product_attribute_of_product_quantity(self):
-        self.assertEqual(self.productquantity_class.product._extract_mock_name(), self.product_dict['name'])  # TODO: find a different approach without calling private method
-        self.assertEqual(self.productquantity_class.product.unit, self.product_dict['unit'])
-
-    def test_assert_quantity_attribute_of_product_quantity(self):
-        self.assertEqual(self.productquantity_class.quantity, self.product_quantity)
-
-
-class TestProductQuantityIntegration(unittest.TestCase, SharedUnitTests):
-    def setUp(self):
-        self.product_dict = set_up_product_dict()
-        self.product_quantity = range(random.randrange(2, 50, 1))
-        self.product_class = mdl_objcts.Product(**cp.deepcopy(self.product_dict))
-        self.test_class = mdl_objcts.ProductQuantity(product=self.product_class,
-                                                     quantity=self.product_quantity)
-
-    def test_assert_quantity_attribute_of_product_quantity(self):
-        self.assertEqual(self.test_class.quantity, self.product_quantity)
+    def test_assert_price_per_unit(self):
+        self.assertEqual(self.product.price_per_unit, self.product_dict['price_per_unit'])
 
 
 class TestProductUnit(unittest.TestCase):
@@ -78,8 +50,8 @@ class TestSpecialOfferType(unittest.TestCase):
     def test_assert_special_offer_type_of_one_equals_three_for_two(self):
         self.assertEqual(self.class_enum(1), mdl_objcts.SpecialOfferType.THREE_FOR_TWO)
 
-    def test_assert_special_offer_type_of_two_equals_ten_percent_discount(self):
-        self.assertEqual(self.class_enum(2), mdl_objcts.SpecialOfferType.TEN_PERCENT_DISCOUNT)
+    def test_assert_special_offer_type_of_two_equals_percent_discount(self):
+        self.assertEqual(self.class_enum(2), mdl_objcts.SpecialOfferType.PERCENT_DISCOUNT)
 
     def test_assert_special_offer_type_of_three_equals_two_for_amount(self):
         self.assertEqual(self.class_enum(3), mdl_objcts.SpecialOfferType.TWO_FOR_AMOUNT)
@@ -95,46 +67,54 @@ class TestSpecialOfferType(unittest.TestCase):
             self.class_enum(6)
 
 
-@pytest.mark.skip(reason="higher priorities elsewhere for now. please rely on integrated tests for now.")
 class TestOffer(unittest.TestCase):
     def setUp(self):
-        pass
-
-
-class TestOfferIntegration(unittest.TestCase, SharedUnitTests):
-    def setUp(self):
         self.offer_type_value = random.randrange(1, 5)
-        self.product_dict = set_up_product_dict()
-        self.argument = 'unsure what is this for'
+        self.argument = random.random() * 100
 
-        self.test_class = mdl_objcts.Offer(offer_type=mdl_objcts.SpecialOfferType(self.offer_type_value),
-                                            product=mdl_objcts.Product(**cp.deepcopy(self.product_dict)),
-                                            argument=self.argument)
+        self.offer = mdl_objcts.Offer(offer_type=mdl_objcts.SpecialOfferType(self.offer_type_value),
+                                      argument=self.argument)
 
     def test_asserts_offer_type_setup_correctly(self):
-        self.assertEqual(self.test_class.offer_type.value, self.offer_type_value)
+        self.assertEqual(self.offer.offer_type.value, self.offer_type_value)
 
-    @pytest.mark.skip(reason="unsure at the moment what arguments exactly, will check later.")
     def test_asserts_argument_correctly(self):
-        pass
+        self.assertEqual(self.offer.argument, self.argument)
+
+    def test_refuses_setting_offer_type(self):
+        with self.assertRaises(AttributeError):
+            self.offer.offer_type = self.offer_type_value
+
+    def test_refuses_setting_argument(self):
+        with self.assertRaises(AttributeError):
+            self.offer.argument = self.argument
 
 
-@pytest.mark.skip(reason="not a higher priority.")
 class TestDiscount(unittest.TestCase):
-    pass
-
-
-class TestDiscountIntegration(unittest.TestCase, SharedUnitTests):
     def setUp(self):
         self.product_dict = set_up_product_dict()
-        self.test_class = mdl_objcts.Discount(product=mdl_objcts.Product(**cp.deepcopy(self.product_dict)),
-                                              description="It's a great discount!",
-                                              discount_amount="TODO, what exactly to put here?")
+        self.kwargs = {'product': PRODUCT_NAMEDTUPLE(**cp.deepcopy(self.product_dict)),
+                       'description': "A great discount for Christmas!",
+                       'discount_amount': random.random() * 100_000}
+        self.discount = mdl_objcts.Discount(**cp.copy(self.kwargs))
 
-    @pytest.mark.skip(reason="Unsure in what format the description should be (for now)")
     def test_asserts_description_correctly(self):
-        pass
+        self.assertEqual(self.discount.description, self.kwargs['description'])
 
-    @pytest.mark.skip(reason="Unsure in what format the discount amount should be (for now)")
     def test_asserts_discount_amount_correctly(self):
-        pass
+        self.assertEqual(self.discount.discount_amount, self.kwargs['discount_amount'])
+
+    def test_asserts_product_correctly(self):
+        self.assertEqual(self.discount.product, self.kwargs['product'])
+
+    def test_refuses_setting_product(self):
+        with self.assertRaises(AttributeError):
+            self.discount.product = self.kwargs['product']
+
+    def test_refuses_setting_description(self):
+        with self.assertRaises(AttributeError):
+            self.discount.description = self.kwargs['description']
+
+    def test_refuses_setting_discount_amount(self):
+        with self.assertRaises(AttributeError):
+            self.discount.discount_amount = self.kwargs['discount_amount']

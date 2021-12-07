@@ -1,14 +1,16 @@
-from pythonsupermarket.catalog import SupermarketCatalog
+from pythonsupermarket.template_catalog import TemplateCatalog
 
 
-class FakeCatalog(SupermarketCatalog):
+class FakeCatalog(TemplateCatalog):
     def __init__(self):
-        self.products = {}
-        self.prices = {}
+        self._products = {}
 
-    def add_product(self, product, price):
-        self.products[product.name] = product
-        self.prices[product.name] = price
+    @property
+    def products(self):
+        return self._products
 
-    def unit_price(self, product):  # TODO: why does this exist?
-        return self.prices[product.name]
+    def add_product(self, product):
+        self._products[product.name] = product
+
+    def get_product(self, product):
+        return self._products[product.name]
