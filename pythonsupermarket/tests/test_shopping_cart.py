@@ -3,7 +3,6 @@ import random
 import unittest
 
 from parameterized import parameterized
-import pytest
 
 from pythonsupermarket.fake_catalog import FakeCatalog
 import pythonsupermarket.model_objects as mdl_objcts
@@ -11,11 +10,6 @@ from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.receipt import Receipt
 
 from shared_test_functions import set_up_product_dict
-
-
-@pytest.mark.skip(reason="Limited time, priorities.")
-class TestShoppingCart(unittest.TestCase):
-    pass
 
 
 class TestShoppingCartIntegration(unittest.TestCase):

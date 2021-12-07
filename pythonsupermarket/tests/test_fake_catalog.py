@@ -1,10 +1,7 @@
-from collections import namedtuple
 import random
-import string
 import unittest
 
 from parameterized import parameterized
-import pytest
 
 from pythonsupermarket.template_catalog import TemplateCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog

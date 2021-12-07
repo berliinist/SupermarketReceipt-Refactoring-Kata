@@ -2,10 +2,8 @@ import copy as cp
 import enum
 import random
 import unittest
-from unittest.mock import Mock, PropertyMock
 
 from parameterized import parameterized
-import pytest
 
 import pythonsupermarket.model_objects as mdl_objcts
 

@@ -3,7 +3,6 @@ import random
 import unittest
 
 from parameterized import parameterized
-import pytest
 
 import pythonsupermarket.model_objects as mdl_objcts
 import pythonsupermarket.receipt as receipt
@@ -47,11 +46,6 @@ class TestReceiptItem(unittest.TestCase):
     def test_rejects_setting_total_price(self):
         with self.assertRaises(AttributeError):
             self.test_class.total_price = self.kwargs['total_price']
-
-
-@pytest.mark.skip(reason="Mocked ReceiptItem of a lower priority currently.")
-class TestReceipt(unittest.TestCase):
-    pass
 
 
 class TestReceiptIntegration(unittest.TestCase):
