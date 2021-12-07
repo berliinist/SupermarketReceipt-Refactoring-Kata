@@ -16,8 +16,8 @@ class Teller:
     def offers(self):
         return self._offers
 
-    def add_special_offer(self, offer_type, product, argument):
-        self._offers[product] = Offer(offer_type, argument)
+    def add_special_offer(self, offer_type, item, argument):
+        self._offers[item] = Offer(offer_type, argument)
 
     def checks_out_articles_from(self, the_cart):
         receipt = Receipt()

@@ -54,7 +54,7 @@ class TestTellerIntegration(unittest.TestCase):
                                                    SpecialOfferType.THREE_FOR_TWO,
                                                    SpecialOfferType.TWO_FOR_AMOUNT]),
                       'argument': round(random.random() * 10, 2)}
-            self.teller.add_special_offer(**kwargs, product=self.products[i])
+            self.teller.add_special_offer(**kwargs, item=self.products[i])
             expected.update({self.products[i]: cp.deepcopy(kwargs)})
         return expected
 
