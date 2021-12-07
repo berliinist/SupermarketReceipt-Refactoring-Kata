@@ -6,7 +6,7 @@ from parameterized import parameterized
 from pythonsupermarket.template_catalog import TemplateCatalog
 from pythonsupermarket.fake_catalog import FakeCatalog
 
-from tests.shared_test_functions import set_up_product_dict, PRODUCT_NAMEDTUPLE
+from tests.shared_test_functions import setup_product_kwargs, PRODUCT_NAMEDTUPLE
 
 
 class TestFakeCatalog(unittest.TestCase):
@@ -27,12 +27,12 @@ class TestFakeCatalog(unittest.TestCase):
             self.fakecatalog.products = {}
 
     def test_calling_initial_get_product_method_raises_error(self):
-        product_catalog_not_added = PRODUCT_NAMEDTUPLE(**set_up_product_dict())
+        product_catalog_not_added = PRODUCT_NAMEDTUPLE(**setup_product_kwargs())
         with self.assertRaises(KeyError):
             self.fakecatalog.get_product(product_catalog_not_added)
 
     def _add_products(self, nr_add_products):
-        products = [PRODUCT_NAMEDTUPLE(**set_up_product_dict()) for _ in range(nr_add_products)]
+        products = [PRODUCT_NAMEDTUPLE(**setup_product_kwargs()) for _ in range(nr_add_products)]
         for product in products:
             self.fakecatalog.add_product(product)
         return products

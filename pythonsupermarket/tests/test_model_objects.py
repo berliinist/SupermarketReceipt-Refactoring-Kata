@@ -7,12 +7,12 @@ from parameterized import parameterized
 
 import pythonsupermarket.model_objects as mdl_objcts
 
-from tests.shared_test_functions import set_up_product_dict, PRODUCT_NAMEDTUPLE
+from tests.shared_test_functions import setup_product_kwargs, PRODUCT_NAMEDTUPLE
 
 
 class TestProductInfo(unittest.TestCase):
     def setUp(self):
-        self.product_dict = set_up_product_dict()
+        self.product_dict = setup_product_kwargs()
         self.product = mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict))
 
     def test_assert_name(self):
@@ -92,7 +92,7 @@ class TestOffer(unittest.TestCase):
 
 class TestDiscount(unittest.TestCase):
     def setUp(self):
-        self.product_dict = set_up_product_dict()
+        self.product_dict = setup_product_kwargs()
         self.kwargs = {'product': PRODUCT_NAMEDTUPLE(**cp.deepcopy(self.product_dict)),
                        'description': "A great discount for Christmas!",
                        'discount_amount': random.random() * 100_000}

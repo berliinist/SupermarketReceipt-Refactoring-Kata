@@ -9,16 +9,17 @@ import pythonsupermarket.model_objects as mdl_objcts
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.receipt import Receipt
 
-from shared_test_functions import set_up_product_dict
+from shared_test_functions import setup_product_kwargs
 
 
+# TODO: this test file requires good refactoring
 class TestShoppingCartIntegration(unittest.TestCase):
     def setUp(self):
         self.shoppingcart = ShoppingCart()
         self.handle_kw_args = {'receipt': Receipt(), 'offers': {}, 'catalog': FakeCatalog()}
 
     def _set_up_kw_args_for_each_item(self, nr_items):
-        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
+        self.product_dicts_list = [setup_product_kwargs() for _ in range(nr_items)]
         self.kw_args_list = [{'item': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1)} for i in range(nr_items)]
 
@@ -160,7 +161,7 @@ class TestShoppingCartHandleOffersOfTwoForAmount(unittest.TestCase, SharedHandle
     def test_discounts_for_two_quantities_item_with_offer_price_two_for_amount(self):
         self._set_up_kw_args_and_add_product('cherrytomatoes', 0.69, 0.99, 2, mdl_objcts.ProductUnit.EACH,
                                              mdl_objcts.SpecialOfferType.TWO_FOR_AMOUNT)
-        expected = -0.39  # TODO: do math to get this value
+        expected = -0.39  # TODO: setup math formula here
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
 
         # TODO: expected total value.
@@ -175,7 +176,7 @@ class TestShoppingCartHandleOffersOfFiveForAmount(unittest.TestCase, SharedHandl
     def test_discounts_for_five_quantities_item_with_offer_price_five_for_amount(self):
         self._set_up_kw_args_and_add_product('toothpaste', 1.79, 7.49, 5, mdl_objcts.ProductUnit.EACH,
                                              mdl_objcts.SpecialOfferType.FIVE_FOR_AMOUNT)
-        expected = -1.46  # TODO: do math to get this value
+        expected = -1.46  # TODO: setup math formula here
         self.assertAlmostEqual(self.handle_kw_args['receipt'].discounts[0].discount_amount, expected, places=3)
 
         # TODO: expected total value.
@@ -186,7 +187,7 @@ class TestShoppingCartHandleOffersOfFiveForAmount(unittest.TestCase, SharedHandl
         self.assertListEqual(self.handle_kw_args['receipt'].discounts, [])
 
 
-class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):  # TODO: this needs some serious refactoring.
+class TestShoppingCartHandleOffersOfDiscountedBundles(unittest.TestCase):
     def setUp(self):
         self.unit_prices = [round(random.random() * 50, 2) for _ in range(2)]
         self.products = [mdl_objcts.ProductInfo('toothpaste', mdl_objcts.ProductUnit.EACH, self.unit_prices[0]),
