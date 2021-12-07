@@ -50,18 +50,21 @@ class ShoppingCart:
         if int(quantity) > 2:
             x = 3
             number_of_x = math.floor(int(quantity) / x)
-            discount_amount = quantity * price_per_unit - (
-                    (number_of_x * 2 * price_per_unit) + int(quantity) % 3 * price_per_unit)
+
+            total = (number_of_x * 2 * price_per_unit) + int(quantity) % 3 * price_per_unit
+            discount_amount = quantity * price_per_unit - total
+
             return Discount(item, "3 for 2", -discount_amount)
         return None
 
     def _discount_percent_discount(self, item, price_per_unit, quantity, offer):
-        return Discount(item, str(offer.argument) + "% off",
-                        -quantity * price_per_unit * offer.argument / 100.0)
+        discount_amount = quantity * price_per_unit * offer.argument / 100.0
+        return Discount(item, str(offer.argument) + "% off", -discount_amount)
 
     def _discount_two_for_amount(self, item, price_per_unit, quantity, offer):
         if int(quantity) >= 2:
             x = 2
+
             total = offer.argument * (int(quantity) / x) + int(quantity) % 2 * price_per_unit
             discount_n = price_per_unit * quantity - total
             return Discount(item, "2 for " + str(offer.argument), -discount_n)
@@ -71,15 +74,12 @@ class ShoppingCart:
         if int(quantity) >= 5:
             x = 5
             number_of_x = math.floor(int(quantity) / x)
-            discount_total = price_per_unit * quantity - (
-                    offer.argument * number_of_x + int(quantity) % 5 * price_per_unit)
 
-            total = offer.argument * number_of_x + int(quantity) % 5 * price_per_unit)
-            discount_total = price_per_unit * quantity - total
-
-            return Discount(item, str(x) + " for " + str(offer.argument), -discount_total)
+            total = offer.argument * number_of_x + int(quantity) % 5 * price_per_unit
+            discount_amount = price_per_unit * quantity - total
+            return Discount(item, str(x) + " for " + str(offer.argument), -discount_amount)
         return None
 
     def _discount_bundle_discount(self, item, price_per_unit, quantity, offer):
-        return Discount(item, str(offer.argument) + "% off for first unique item",
-                        -price_per_unit * offer.argument / 100)
+        discount_amount = price_per_unit * offer.argument / 100
+        return Discount(item, str(offer.argument) + "% off for first unique item", -discount_amount)
