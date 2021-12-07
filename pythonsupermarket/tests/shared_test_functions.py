@@ -4,6 +4,9 @@ import random
 import string
 
 
+PRODUCT_NAMEDTUPLE = namedtuple('product', ['name', 'unit', 'price_per_unit'])
+
+
 class ProductUnitForTestOnly(Enum):
     EACH = 1
     KILO = 2

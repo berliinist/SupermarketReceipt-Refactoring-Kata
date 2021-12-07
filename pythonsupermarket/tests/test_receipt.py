@@ -8,17 +8,12 @@ import pytest
 import pythonsupermarket.model_objects as mdl_objcts
 import pythonsupermarket.receipt as receipt
 
-from tests.shared_test_functions import set_up_product_dict
+from tests.shared_test_functions import set_up_product_dict, PRODUCT_NAMEDTUPLE
 
 
-@pytest.mark.skip(reason="Mocked items of product class a lower priority at the moment.")
 class TestReceiptItem(unittest.TestCase):
-    pass
-
-
-class TestReceiptItemIntegration(unittest.TestCase):
     def setUp(self):
-        self.kwargs = {'product':       mdl_objcts.ProductInfo(**cp.deepcopy(set_up_product_dict())),
+        self.kwargs = {'product':       PRODUCT_NAMEDTUPLE(**cp.deepcopy(set_up_product_dict())),
                        'quantity':      random.randrange(1, 50, 1),
                        'unit_price':    round(random.random() * 100, 2),
                        'total_price':   round(random.random() * 200, 2)}
@@ -36,6 +31,22 @@ class TestReceiptItemIntegration(unittest.TestCase):
 
     def test_asserts_product_correctly(self):
         self.assertEqual(self.test_class.product, self.kwargs['product'])
+
+    def test_rejects_setting_product(self):
+        with self.assertRaises(AttributeError):
+            self.test_class.product = self.kwargs['product']
+
+    def test_rejects_setting_quantity(self):
+        with self.assertRaises(AttributeError):
+            self.test_class.quantity = self.kwargs['quantity']
+
+    def test_rejects_setting_unit_price(self):
+        with self.assertRaises(AttributeError):
+            self.test_class.unit_price = self.kwargs['unit_price']
+
+    def test_rejects_setting_total_price(self):
+        with self.assertRaises(AttributeError):
+            self.test_class.total_price = self.kwargs['total_price']
 
 
 @pytest.mark.skip(reason="Mocked ReceiptItem of a lower priority currently.")

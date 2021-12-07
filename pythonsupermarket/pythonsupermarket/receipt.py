@@ -1,10 +1,26 @@
 
-class ReceiptItem:  # TODO: make these attributes unchangeable
+class ReceiptItem:
     def __init__(self, product, quantity, unit_price, total_price):
-        self.product = product
-        self.quantity = quantity
-        self.unit_price = unit_price
-        self.total_price = total_price
+        self._product = product
+        self._quantity = quantity
+        self._unit_price = unit_price
+        self._total_price = total_price
+
+    @property
+    def product(self):
+        return self._product
+
+    @property
+    def quantity(self):
+        return self._quantity
+
+    @property
+    def unit_price(self):
+        return self._unit_price
+
+    @property
+    def total_price(self):
+        return self._total_price
 
 
 class Receipt:
