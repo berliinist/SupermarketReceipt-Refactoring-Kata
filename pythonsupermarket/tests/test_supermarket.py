@@ -36,7 +36,7 @@ class TestTenPercentDiscount(unittest.TestCase):
         self.assertEqual(self.apples, self.receipt.items[0].product)
 
     def test_assert_normal_price_of_an_item_per_kilo(self):  # TODO: duplicate, though strong refactoring in test_receipt.py needed.
-        self.assertEqual(self.receipt.items[0].price, 1.99)
+        self.assertEqual(self.receipt.items[0].unit_price, 1.99)
 
     def test_assert_total_price_of_item(self):  # TODO: duplicate.
         self.assertAlmostEqual(2.5 * 1.99, self.receipt.items[0].total_price, delta=0.01)

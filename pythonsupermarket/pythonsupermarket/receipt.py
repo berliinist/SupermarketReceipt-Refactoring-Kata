@@ -1,9 +1,9 @@
 
 class ReceiptItem:
-    def __init__(self, product, quantity, price, total_price):
+    def __init__(self, product, quantity, unit_price, total_price):
         self.product = product
         self.quantity = quantity
-        self.price = price  # TODO: price per unit?
+        self.unit_price = unit_price
         self.total_price = total_price
 
 
@@ -20,8 +20,8 @@ class Receipt:
             total += discount.discount_amount
         return total
 
-    def add_product(self, product, quantity, price, total_price):  # TODO: should rather be product, quantity, total_price? this "price" is price per unit?
-        self._items.append(ReceiptItem(product, quantity, price, total_price))  # DO: price_per_unit to avoid confusion.
+    def add_product(self, product, quantity, unit_price, total_price):
+        self._items.append(ReceiptItem(product, quantity, unit_price, total_price))
 
     def add_discount(self, discount):
         if discount is not None:

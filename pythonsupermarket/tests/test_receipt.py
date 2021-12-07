@@ -20,18 +20,18 @@ class TestReceiptItemIntegration(unittest.TestCase, SharedUnitTests):
     def setUp(self):
         self.product_dict = set_up_product_dict()
         self.product_quantity = random.randrange(1, 50, 1)
-        self.price = round(random.random() * 100, 2)
-        self.total_price = max(self.price, round(random.random() * 200, 2))
+        self.unit_price = round(random.random() * 100, 2)
+        self.total_price = max(self.unit_price, round(random.random() * 200, 2))
         self.test_class = receipt.ReceiptItem(product=mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dict)),
                                               quantity=self.product_quantity,
-                                              price=self.price,
+                                              unit_price=self.unit_price,
                                               total_price=self.total_price)
 
     def test_asserts_quantity(self):
         self.assertEqual(self.test_class.quantity, self.product_quantity)
 
-    def test_asserts_price(self):
-        self.assertEqual(self.test_class.price, self.price)
+    def test_asserts_unit_price(self):
+        self.assertEqual(self.test_class.unit_price, self.unit_price)
 
     def test_asserts_total_price(self):
         self.assertEqual(self.test_class.total_price, self.total_price)
@@ -50,7 +50,7 @@ class TestReceiptIntegration(unittest.TestCase):
         self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
         self.kw_args_list = [{'product': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1),
-                              'price': round(random.random() * 100, 2),
+                              'unit_price': round(random.random() * 100, 2),
                               'total_price': round(random.random() * 200, 2)} for i, _ in enumerate(range(nr_items))]
 
     def _set_up_kw_args_of_each_discount_in_list(self, nr_items):
@@ -106,12 +106,12 @@ class TestReceiptIntegration(unittest.TestCase):
                              [self.kw_args_list[i]['quantity'] for i in range(nr_items)])
 
     @parameterized.expand([(1,), (6,)])
-    def test_assert_price_of_each_added_receipt_item(self, nr_items):
+    def test_assert_unit_price_of_each_added_receipt_item(self, nr_items):
         self._set_up_kw_args_of_each_product_in_list(nr_items)
         for i in range(nr_items):
             self.receipt.add_product(**self.kw_args_list[i])
-        self.assertListEqual([self.receipt.items[i].price for i in range(nr_items)],
-                             [self.kw_args_list[i]['price'] for i in range(nr_items)])
+        self.assertListEqual([self.receipt.items[i].unit_price for i in range(nr_items)],
+                             [self.kw_args_list[i]['unit_price'] for i in range(nr_items)])
 
     @parameterized.expand([(1,), (5,)])
     def test_assert_total_price_of_each_added_receipt_item(self, nr_items):
