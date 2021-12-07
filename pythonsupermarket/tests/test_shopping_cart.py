@@ -9,7 +9,7 @@ import pythonsupermarket.model_objects as mdl_objcts
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.receipt import Receipt
 
-from shared_test_functions import set_up_product_dict
+from shared_test_functions import setup_product_kwargs
 
 
 class TestShoppingCartIntegration(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestShoppingCartIntegration(unittest.TestCase):
         self.handle_kw_args = {'receipt': Receipt(), 'offers': {}, 'catalog': FakeCatalog()}
 
     def _set_up_kw_args_for_each_item(self, nr_items):
-        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
+        self.product_dicts_list = [setup_product_kwargs() for _ in range(nr_items)]
         self.kw_args_list = [{'item': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
                               'quantity': random.randrange(1, 100, 1)} for i in range(nr_items)]
 

@@ -9,7 +9,7 @@ from pythonsupermarket.model_objects import SpecialOfferType, ProductInfo, Offer
 from pythonsupermarket.shopping_cart import ShoppingCart
 from pythonsupermarket.teller import Teller
 
-from shared_test_functions import set_up_product_dict
+from shared_test_functions import setup_product_kwargs
 
 
 class TestTellerIntegration(unittest.TestCase):
@@ -36,7 +36,7 @@ class TestTellerIntegration(unittest.TestCase):
             teller.offers = {}
 
     def _create_products_and_call_add_product(self, nr_products):
-        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_products)]
+        self.product_dicts_list = [setup_product_kwargs() for _ in range(nr_products)]
         self.products = [ProductInfo(**cp.deepcopy(self.product_dicts_list[i])) for i in range(nr_products)]
         for i in range(nr_products):
             self.catalog.add_product(self.products[i])

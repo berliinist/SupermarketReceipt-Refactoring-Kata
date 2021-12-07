@@ -7,12 +7,12 @@ from parameterized import parameterized
 import pythonsupermarket.model_objects as mdl_objcts
 import pythonsupermarket.receipt as receipt
 
-from tests.shared_test_functions import set_up_product_dict, PRODUCT_NAMEDTUPLE
+from tests.shared_test_functions import setup_product_kwargs, PRODUCT_NAMEDTUPLE
 
 
 class TestReceiptItem(unittest.TestCase):
     def setUp(self):
-        self.kwargs = {'item':          PRODUCT_NAMEDTUPLE(**cp.deepcopy(set_up_product_dict())),
+        self.kwargs = {'item':          PRODUCT_NAMEDTUPLE(**cp.deepcopy(setup_product_kwargs())),
                        'quantity':      random.randrange(1, 50, 1),
                        'unit_price':    round(random.random() * 100, 2),
                        'total_price':   round(random.random() * 200, 2)}
@@ -53,7 +53,7 @@ class TestReceiptIntegration(unittest.TestCase):
         self.receipt = receipt.Receipt()
 
     def _set_up_kwargs_of_each_item_in_list(self, nr_items):
-        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
+        self.product_dicts_list = [setup_product_kwargs() for _ in range(nr_items)]
         self.items = [mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])) for i in range(nr_items)]
         self.kw_args_list = [{'item': self.items[i],
                               'quantity': random.randrange(1, 100, 1),
@@ -61,7 +61,7 @@ class TestReceiptIntegration(unittest.TestCase):
                               'total_price': round(random.random() * 200, 2)} for i, _ in enumerate(range(nr_items))]
 
     def _set_up_kw_args_of_each_discount_in_list(self, nr_items):
-        self.product_dicts_list = [set_up_product_dict() for _ in range(nr_items)]
+        self.product_dicts_list = [setup_product_kwargs() for _ in range(nr_items)]
         self.kw_args_disc_list = [
             {'product': mdl_objcts.ProductInfo(**cp.deepcopy(self.product_dicts_list[i])),
              'description': f'Some discount number {i+1}',
